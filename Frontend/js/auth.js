@@ -131,3 +131,53 @@
 
   mount(false); setTimeout(function(){mount(false);},60); setTimeout(function(){mount(false);},400); setTimeout(function(){mount(false);},900);
 })();
+
+/* auth fix: deterministic enter-home after signup/login */
+(function(){
+  var A=window.Ascendin;
+  function $(id){return document.getElementById(id);}
+  function hash(s){var h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))|0;}return 'h'+(h>>>0);}
+  function strong(pw){ return pw.length>=8 && /[A-Z]/.test(pw) && /[a-z]/.test(pw) && /[0-9]/.test(pw) && /[^A-Za-z0-9]/.test(pw); }
+  function ageOf(dob){ var d=new Date(dob); if(isNaN(d))return -1; var t=new Date(); var a=t.getFullYear()-d.getFullYear(); var m=t.getMonth()-d.getMonth(); if(m<0||(m===0&&t.getDate()<d.getDate()))a--; return a; }
+  function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+  function enterApp(phone){
+    try{
+      localStorage.setItem('ascendin-session', phone);
+      var raw=localStorage.getItem('ascendin-acct-'+phone);
+      if(raw){ var st=JSON.parse(raw); if(A.state&&st){ for(var k in st){ A.state[k]=st[k]; } } }
+      if(A.state){ A.state.phone=phone; if(A.save) A.save(); }
+      if(A.renderAll) A.renderAll();
+      if(A.go) A.go('home');
+    }catch(e){}
+  }
+  A.AuthUI.submit=function(){
+    var err=$('auth-err2');
+    var phone=($('au-phone').value||'').replace(/\D/g,'');
+    var pw=($('au-pw').value||'');
+    if(phone.length<9){ if(err) err.textContent='Enter a valid Ugandan mobile number.'; return; }
+    if($('au-email')){
+      var email=($('au-email').value||'').trim().toLowerCase();
+      var pw2=($('au-pw2').value||'');
+      var dob=($('au-dob').value||'');
+      if(!validEmail(email)){ err.textContent='Enter a valid email address.'; return; }
+      if(!strong(pw)){ err.textContent='Password too weak: need 8+ chars with upper, lower, number and symbol.'; return; }
+      if(pw!==pw2){ err.textContent='Passwords do not match.'; return; }
+      var ag=ageOf(dob); if(ag<18){ err.textContent='You must be 18 years or older to open an account.'; return; }
+      if(ag>120){ err.textContent='Enter a valid date of birth.'; return; }
+      var tcBox=$('au-tc'); if(!tcBox||!tcBox.checked){ err.textContent='You must read and accept the Terms & Conditions.'; return; }
+      var idx={}; try{ idx=JSON.parse(localStorage.getItem('asc_cred_index')||'{}'); }catch(e){}
+      if(idx[phone]){ err.textContent='This number already has an account. Sign in instead.'; return; }
+      if(idx['e:'+email]){ err.textContent='This email is already registered.'; return; }
+      idx[phone]=true; idx['e:'+email]=phone;
+      localStorage.setItem('asc_cred_index',JSON.stringify(idx));
+      localStorage.setItem('asc_cred_'+phone,JSON.stringify({pw:hash(pw),email:email,dob:dob,tc:true,ts:Date.now()}));
+      localStorage.setItem('asc_tc_v1','1');
+      enterApp(phone);
+    } else {
+      var saved=null; try{ saved=JSON.parse(localStorage.getItem('asc_cred_'+phone)||'null'); }catch(e){}
+      if(!saved){ err.textContent='No account found for this number. Create one first.'; return; }
+      if(hash(pw)!==saved.pw){ err.textContent='Incorrect password. Try again.'; return; }
+      enterApp(phone);
+    }
+  };
+})();
