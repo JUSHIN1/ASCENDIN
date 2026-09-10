@@ -6,9 +6,8 @@
   function strong(pw){ return pw.length>=8 && /[A-Z]/.test(pw) && /[a-z]/.test(pw) && /[0-9]/.test(pw) && /[^A-Za-z0-9]/.test(pw); }
   function ageOf(dob){ var d=new Date(dob); if(isNaN(d))return -1; var t=new Date(); var a=t.getFullYear()-d.getFullYear(); var m=t.getMonth()-d.getMonth(); if(m<0||(m===0&&t.getDate()<d.getDate()))a--; return a; }
   function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
-  var proceed=A.AuthSubmit;
   var mode=(localStorage.getItem('asc_cred_index')!==null)?'login':'signup';
-  if(!A.state){ A.state={phone:null,balance:0,holdings:{},bondHold:{},transactions:[],alerts:[],boosts:[]}; }
+  if(!A.state){ A.state={phone:null,balance:0,holdings:{},bondHold:{},transactions:[],alerts:[],boosts:[],tx:[],notifs:[],theme:'dark'}; }
 
   var TC=[
    ['1. Definitions','"Ascendin", "the Platform", "we/us/our" refer to the Ascendin application and operator. "You/User" refers to any registered individual. "Account" means your Ascendin wallet and investment profile. "Mobile Money" means MTN Mobile Money and Airtel Money in Uganda.'],
@@ -61,7 +60,6 @@
       field('Confirm password','<div class="field" style="position:relative"><input id="au-pw2" type="password" placeholder="Re-enter password">'+pwToggle('au-pw2')+'</div>')+
       field('Date of birth (18+ only)','<div class="field"><input id="au-dob" type="date"></div>')+
       '<label style="display:flex;gap:8px;align-items:flex-start;margin:6px 0 4px;font-size:12.5px;text-align:left"><input type="checkbox" id="au-tc" style="margin-top:2px"><span>I am 18+ and I have read and agree to the <span class="link" onclick="Ascendin.openTC()">Terms & Conditions</span></span></label>'+
-      '<input type="hidden" id="auth-phone" value="">'+
       '<div class="small down" id="auth-err2" style="min-height:16px;margin-top:4px"></div>'+
       '<button class="btn green" style="width:100%;margin-top:8px" onclick="Ascendin.AuthUI.submit()">CREATE ACCOUNT</button>'+
       '<div style="text-align:center;font-size:12.5px;color:var(--muted);margin-top:16px">Already have an account? <span class="link" onclick="Ascendin.AuthUI.show(\'login\')">Sign in</span></div>'+
@@ -72,7 +70,6 @@
       head('Welcome back','Sign in with your mobile number and password to reach your wallet, stocks and bonds.')+
       field('Mobile number','<div class="field"><span class="pre">+256</span><input id="au-phone" type="tel" inputmode="numeric" placeholder="7XXXXXXXX"></div>')+
       field('Password','<div class="field" style="position:relative"><input id="au-pw" type="password" placeholder="Your password">'+pwToggle('au-pw')+'</div>')+
-      '<input type="hidden" id="auth-phone" value="">'+
       '<div class="small down" id="auth-err2" style="min-height:16px;margin-top:4px"></div>'+
       '<button class="btn green" style="width:100%;margin-top:8px" onclick="Ascendin.AuthUI.submit()">SIGN IN</button>'+
       '<div style="text-align:center;font-size:12.5px;color:var(--muted);margin-top:16px">New to Ascendin? <span class="link" onclick="Ascendin.AuthUI.show(\'signup\')">Create an account</span></div>'+
@@ -85,18 +82,14 @@
     wrap.innerHTML=(mode==='signup'?signupScreen():signinScreen());
   }
 
-  /* The handoff: original submit first; if Home is not live in 500ms,
-     reload into the app's own boot path which restores the session. */
-  function handoff(phone){
-    var hp=$('auth-phone'); if(hp) hp.value=phone;
-    localStorage.setItem('ascendin-session', phone);
-    try{ proceed(); }catch(e){ console.error('proceed:',e); }
-    setTimeout(function(){
-      var home=$('view-home');
-      if(A.state && A.state.phone){ try{ localStorage.setItem('ascendin-session', A.state.phone); }catch(e){} }
-      if(home && home.classList.contains('active')){ return; }
-      location.reload();
-    }, 500);
+  /* The REAL handoff: normalize phone, enter the account via the app's own
+     A.Auth.enter (which handles A.state + session + Sync.ACC_KEY correctly),
+     render everything, and navigate to Home. We do NOT call proceed() - it
+     writes to auth-err which does not exist in our HTML and would crash. */
+  function handoff(normalizedPhone){
+    try{ A.Auth.enter(normalizedPhone); }catch(e){ console.error('enter:',e); return; }
+    try{ A.renderAll(); }catch(e){ console.error('renderAll:',e); }
+    try{ A.go('home'); }catch(e){ console.error('go:',e); }
   }
 
   A.AuthUI={
@@ -104,9 +97,12 @@
     togglePw:function(id){ var e=$(id); if(!e) return; e.type=(e.type==='password'?'text':'password'); },
     submit:function(){
       var err=$('auth-err2');
-      var phone=($('au-phone').value||'').replace(/\D/g,'');
+      if(err) err.textContent='';
+      var rawPhone=($('au-phone').value||'').replace(/\D/g,'');
       var pw=($('au-pw').value||'');
-      if(phone.length<9){ err.textContent='Enter a valid Ugandan mobile number.'; return; }
+      if(rawPhone.length<9){ if(err) err.textContent='Enter a valid Ugandan mobile number.'; return; }
+      var phone=A.Auth.normalize(rawPhone);
+      if(!phone){ if(err) err.textContent='Use an MTN (077/078/076) or Airtel (070/075/074) number.'; return; }
       if($('au-email')){
         var email=($('au-email').value||'').trim().toLowerCase();
         var pw2=($('au-pw2').value||'');
@@ -124,19 +120,16 @@
         localStorage.setItem('asc_cred_index',JSON.stringify(idx));
         localStorage.setItem('asc_cred_'+phone,JSON.stringify({pw:hash(pw),email:email,dob:dob,tc:true,ts:Date.now()}));
         localStorage.setItem('asc_tc_v1','1');
-        if(!localStorage.getItem('ascendin-acct-'+phone)){
-          localStorage.setItem('ascendin-acct-'+phone, JSON.stringify({phone:phone,balance:0,holdings:{},bondHold:{},transactions:[],alerts:[],createdAt:Date.now()}));
-        }
         handoff(phone);
       } else {
         var saved=null; try{ saved=JSON.parse(localStorage.getItem('asc_cred_'+phone)||'null'); }catch(e){}
         if(!saved){ err.textContent='No account found for this number. Create one first.'; return; }
         if(hash(pw)!==saved.pw){ err.textContent='Incorrect password. Try again.'; return; }
-        if(!localStorage.getItem('ascendin-acct-'+phone)){ localStorage.setItem('ascendin-acct-'+phone, JSON.stringify({phone:phone,balance:0,holdings:{},bondHold:{},transactions:[],alerts:[],createdAt:Date.now()})); }
         handoff(phone);
       }
     }
   };
+  /* Override the original AuthSubmit so any other code calling it routes here. */
   A.AuthSubmit=function(){ A.AuthUI.submit(); };
 
   /* bonds scrolling tape */
