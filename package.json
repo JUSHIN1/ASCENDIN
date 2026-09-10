@@ -1,0 +1,9 @@
+{
+  "name": "ascendin",
+  "private": true,
+  "scripts": {
+    "install-all": "cd backend && npm install",
+    "backend": "cd backend && npm start",
+    "dev": "cd backend && npm install && npm start"
+  }
+}

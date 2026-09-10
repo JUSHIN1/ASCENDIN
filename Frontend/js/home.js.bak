@@ -1,0 +1,159 @@
+(function(){
+  var A = window.Ascendin;
+  A.Home = {};
+
+  A.Home.render = function(){
+    A.$('home-chip').innerHTML = A.icon('wallet',13) + '<span>' + A.ugx(A.state.balance) + '</span>';
+    var lh = '';
+    for (var i=0;i<A.LEADERBOARD.length;i++){
+      var p = A.LEADERBOARD[i];
+      lh += '<div class="statline"><span><span class="muted">'+(i+1)+'</span> &nbsp;'+p.name+' <span class="muted small">holding '+p.holding+'</span></span><span class="up" style="font-weight:800">+'+p.gain.toFixed(1)+'%</span></div>';
+    }
+    A.$('leader-list').innerHTML = lh;
+    var ah = '';
+    for (var a=0;a<A.ACTIVITY.length;a++){
+      ah += '<div class="statline"><span class="muted" style="font-size:13px">'+A.ACTIVITY[a]+'</span></div>';
+    }
+    A.$('activity-list').innerHTML = ah;
+    var nh = '';
+    for (var n=0;n<A.NEWS.length;n++){
+      var w = A.NEWS[n];
+      nh += '<div class="card"><div style="display:flex; justify-content:space-between"><span class="pill">'+w.tag+'</span><span class="muted small">'+w.time+'</span></div><div style="font-weight:800; margin-top:8px; line-height:1.35">'+w.title+'</div><div class="muted small" style="margin-top:5px; line-height:1.45">'+w.teaser+'</div></div>';
+    }
+    A.$('news-list').innerHTML = nh;
+        A.Stocks.renderHeatTicker();
+  };
+  /* ---------- living video background ---------- */
+  A.Home.videoList = function(){
+    if (window.innerWidth >= 900){
+      return 'abcdefghijk'.split('').map(function(c){ return 'assets/hero-'+c+'.mp4'; });
+    }
+    var m = []; for (var i=1;i<=9;i++) m.push('assets/hero-'+i+'.mp4');
+    return m;
+  };
+  A.Home.videoPos = [];
+  A.Home.rotTimer = null;
+
+  A.Home.initVideo = function(){
+    var v = A.$('home-video'); var wrap = A.$('home-bg');
+    if (!v || !wrap) return;
+    var mode = window.innerWidth >= 900 ? 'web' : 'mob';
+    if (v.dataset.mode === mode){ if (v.paused && v.play) v.play().catch(function(){}); return; }
+    v.dataset.mode = mode;
+    var list = A.Home.videoList();
+    v.dataset.list = JSON.stringify(list);
+    v.dataset.idx = '0';
+    v.dataset.fails = '0';
+    A.Home.videoPos = list.map(function(){ return 0; });
+    wrap.classList.remove('novideo');
+    v.style.display = '';
+    v.onerror = function(){ A.Home.gotoVideo(parseInt(v.dataset.idx||'0',10)+1, true); };
+    v.onended = function(){
+      var i = parseInt(v.dataset.idx||'0',10);
+      A.Home.videoPos[i] = 0;
+      A.Home.gotoVideo(i+1, false);
+    };
+    A.Home.loadVideo(v, 0);
+    if (A.Home.rotTimer) clearInterval(A.Home.rotTimer);
+    A.Home.rotTimer = setInterval(function(){
+      if (document.hidden) return;
+      var cur = A.$('home-video');
+      var i = parseInt(cur.dataset.idx||'0',10);
+      A.Home.videoPos[i] = cur.currentTime || 0;
+      A.Home.gotoVideo(i+1, false);
+    }, 5000);
+  };
+
+  A.Home.loadVideo = function(v, idx){
+    var list = []; try{ list = JSON.parse(v.dataset.list||'[]'); }catch(e){}
+    if (!list.length) return;
+    var seek = A.Home.videoPos[idx] || 0;
+    v.dataset.idx = String(idx);
+    v.src = list[idx];
+    v.onloadedmetadata = function(){
+      if (seek > 0 && seek < (v.duration || 0)) v.currentTime = seek;
+      v.onloadedmetadata = null;
+    };
+    if (v.play) v.play().catch(function(){ A.$('home-bg').classList.add('novideo'); });
+  };
+
+  A.Home.gotoVideo = function(nextIdx, failed){
+    var v = A.$('home-video'); var wrap = A.$('home-bg');
+    var list = []; try{ list = JSON.parse(v.dataset.list||'[]'); }catch(e){}
+    if (!list.length) return;
+    if (failed){
+      var fails = parseInt(v.dataset.fails||'0',10) + 1;
+      v.dataset.fails = String(fails);
+      if (fails >= list.length){ wrap.classList.add('novideo'); v.style.display = 'none'; return; }
+    } else {
+      v.dataset.fails = '0';
+    }
+    var idx = nextIdx % list.length;
+    v.classList.add('vout');
+    setTimeout(function(){
+      v.classList.remove('vout');
+      v.classList.remove('vin'); void v.offsetWidth; v.classList.add('vin');
+      A.Home.loadVideo(v, idx);
+    }, 380);
+  };
+
+  A.Home.initChrome = function(){
+    A.$('qa-stk').innerHTML = A.icon('chart',18).replace('currentColor','#2AABEE') + 'Buy stock';
+    A.$('qa-bnd').innerHTML = A.icon('doc',18).replace('currentColor','#2AABEE') + 'Buy bond';
+    A.$('qa-inv').innerHTML = A.icon('wallet',18).replace('currentColor','#4CBB2C') + 'My portfolio';
+  };
+})();
+/* === HOME VIDEO PLAYBACK ENGINE (appended) === */
+(function(){
+  var A = window.Ascendin;
+  A.Home.videoList = function(){
+    if (window.innerWidth >= 900){
+      return 'abcdefghijk'.split('').map(function(c){ return 'assets/hero-'+c+'.mp4'; });
+    }
+    var m = []; for (var i=1;i<=9;i++) m.push('assets/hero-'+i+'.mp4');
+    return m;
+  };
+  A.Home.initVideo = function(){
+    var v = A.$('home-video'); var wrap = A.$('home-bg');
+    if (!v || !wrap) return;
+    var mode = window.innerWidth >= 900 ? 'web' : 'mob';
+    if (v.dataset.mode === mode){ if (v.paused && v.play) v.play().catch(function(){}); return; }
+    v.dataset.mode = mode;
+    v.dataset.list = JSON.stringify(A.Home.videoList());
+    v.dataset.idx = '0';
+    v.dataset.fails = '0';
+    v.loop = true;
+    wrap.classList.remove('novideo');
+    v.style.display = '';
+    v.onerror = function(){ A.Home.nextVideo(true); };
+    v.src = A.Home.videoList()[0];
+    if (v.play) v.play().catch(function(){ wrap.classList.add('novideo'); });
+    if (A.Home.rotTimer) clearInterval(A.Home.rotTimer);
+    A.Home.rotTimer = setInterval(function(){
+      if (document.hidden) return;
+      A.Home.nextVideo(false);
+    }, 5000);
+  };
+  A.Home.nextVideo = function(failed){
+    var v = A.$('home-video'); var wrap = A.$('home-bg');
+    var list = []; try{ list = JSON.parse(v.dataset.list||'[]'); }catch(e){}
+    if (!list.length) return;
+    var fails = parseInt(v.dataset.fails||'0',10);
+    if (failed){
+      fails++; v.dataset.fails = String(fails);
+      if (fails >= list.length){ wrap.classList.add('novideo'); v.style.display = 'none'; return; }
+    } else { v.dataset.fails = '0'; }
+    var idx = (parseInt(v.dataset.idx||'0',10)+1) % list.length;
+    v.dataset.idx = String(idx);
+    v.classList.add('vout');
+    setTimeout(function(){
+      v.currentTime = 0;
+      v.src = list[idx];
+      v.classList.remove('vout');
+      v.classList.remove('vin'); void v.offsetWidth; v.classList.add('vin');
+      if (v.play) v.play().catch(function(){});
+    }, 380);
+  };
+  var origRender = A.Home.render;
+  A.Home.render = function(){ var r = origRender.apply(this, arguments); A.Home.initVideo(); return r; };
+})();

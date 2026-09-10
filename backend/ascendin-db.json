@@ -1,0 +1,219 @@
+{
+  "users": {},
+  "accounts": {
+    "256772123456": {
+      "data": {
+        "balance": 250000,
+        "holdings": {},
+        "bondHold": {},
+        "tx": []
+      },
+      "updatedAt": "2026-09-03T09:02:30.198Z"
+    },
+    "256751633031": {
+      "data": {
+        "balance": 3131407.472020852,
+        "holdings": {
+          "SBU": {
+            "qty": 119.16374705757516,
+            "cost": 25482.63507704911
+          },
+          "HUT": {
+            "qty": 2.319103838764487,
+            "cost": 800000
+          },
+          "MTNU": {
+            "qty": 2768.90704877399,
+            "cost": 555555
+          },
+          "AAPL": {
+            "qty": 0.287878600272109,
+            "cost": 448751.1401041844
+          },
+          "DFCU": {
+            "qty": 474.64777095810285,
+            "cost": 100000
+          }
+        },
+        "bondHold": {
+          "gob-2y": {
+            "amount": 50000
+          },
+          "kla-muni": {
+            "amount": 70000
+          }
+        },
+        "tx": [
+          {
+            "type": "Buy DFCU",
+            "amt": -100000,
+            "note": "474.6478 units",
+            "time": "10 Sept, 12:53"
+          },
+          {
+            "type": "Sell AAPL",
+            "amt": 1168054.2887731283,
+            "note": "1.0000 units",
+            "time": "10 Sept, 11:07"
+          },
+          {
+            "type": "Buy AAPL",
+            "amt": -1500000,
+            "note": "1.2879 units",
+            "time": "10 Sept, 11:06"
+          },
+          {
+            "type": "Withdraw (Airtel)",
+            "amt": -5000,
+            "note": "To +256 751 633 031 (fee UGX 50)",
+            "time": "9 Sept, 15:02"
+          },
+          {
+            "type": "Buy MTNU",
+            "amt": -555555,
+            "note": "2768.9070 units",
+            "time": "7 Sept, 19:36"
+          },
+          {
+            "type": "Bond kla-muni",
+            "amt": -70000,
+            "note": "Kampala Municipal Bond",
+            "time": "7 Sept, 19:27"
+          },
+          {
+            "type": "Buy HUT",
+            "amt": -800000,
+            "note": "2.3191 units",
+            "time": "7 Sept, 19:26"
+          },
+          {
+            "type": "Sell SBU",
+            "amt": 193908.1832477232,
+            "note": "4556.0000 units",
+            "time": "7 Sept, 19:14"
+          },
+          {
+            "type": "Buy SBU",
+            "amt": -200000,
+            "note": "4675.1637 units",
+            "time": "7 Sept, 19:13"
+          },
+          {
+            "type": "Deposit (Airtel)",
+            "amt": 5000000,
+            "note": "+256 751 633 031",
+            "time": "7 Sept, 19:10"
+          },
+          {
+            "type": "Bond gob-2y",
+            "amt": -50000,
+            "note": "Uganda 2-Year Treasury Bond",
+            "time": "7 Sept, 17:51"
+          },
+          {
+            "type": "Deposit (Airtel)",
+            "amt": 50000,
+            "note": "+256 751 633 031",
+            "time": "3 Sept, 06:32"
+          }
+        ]
+      },
+      "updatedAt": "2026-09-10T09:53:08.635Z"
+    },
+    "256749691913": {
+      "data": {
+        "balance": 0,
+        "holdings": {
+          "UMEME": {
+            "qty": 153.5267944753961,
+            "cost": 40000
+          }
+        },
+        "bondHold": {},
+        "tx": [
+          {
+            "type": "Withdraw (Airtel)",
+            "amt": -10000,
+            "note": "To +256 749 691 913 (fee UGX 100)",
+            "time": "4 Sept, 13:17"
+          },
+          {
+            "type": "Buy UMEME",
+            "amt": -40000,
+            "note": "153.5268 units",
+            "time": "4 Sept, 13:15"
+          },
+          {
+            "type": "Deposit (Airtel)",
+            "amt": 50000,
+            "note": "+256 749 691 913",
+            "time": "4 Sept, 13:13"
+          }
+        ]
+      },
+      "updatedAt": "2026-09-04T10:17:40.416Z"
+    },
+    "256745534563": {
+      "data": {
+        "balance": 3694744.288779203,
+        "holdings": {
+          "MTNU": {
+            "qty": 2134.5580367405014,
+            "cost": 414730.1400987173
+          },
+          "SBU": {
+            "qty": 11689.76696459792,
+            "cost": 500000
+          }
+        },
+        "bondHold": {
+          "nile-green": {
+            "amount": 400000
+          }
+        },
+        "tx": [
+          {
+            "type": "Buy MTNU",
+            "amt": -200000,
+            "note": "1051.7334 units",
+            "time": "10 Sep, 13:39"
+          },
+          {
+            "type": "Bond nile-green",
+            "amt": -400000,
+            "note": "Nile Energy Green Bond",
+            "time": "10 Sep, 11:21"
+          },
+          {
+            "type": "Buy SBU",
+            "amt": -500000,
+            "note": "11689.7670 units",
+            "time": "10 Sep, 11:19"
+          },
+          {
+            "type": "Sell MTNU",
+            "amt": 94744.28877920302,
+            "note": "500.0000 units",
+            "time": "10 Sep, 11:16"
+          },
+          {
+            "type": "Buy MTNU",
+            "amt": -300000,
+            "note": "1582.8246 units",
+            "time": "10 Sep, 11:16"
+          },
+          {
+            "type": "Deposit (Airtel)",
+            "amt": 5000000,
+            "note": "+256 745 534 563",
+            "time": "10 Sep, 11:15"
+          }
+        ]
+      },
+      "updatedAt": "2026-09-10T10:39:05.390Z"
+    }
+  },
+  "requests": {},
+  "journal": [],
+  "txns": []
+}

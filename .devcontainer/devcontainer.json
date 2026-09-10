@@ -1,0 +1,7 @@
+{
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": { "label": "Ascendin", "visibility": "public", "onAutoForward": "notify" }
+  },
+  "postAttachCommand": "bash /workspaces/ASCENDIN/start.sh"
+}
