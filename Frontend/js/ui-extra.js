@@ -142,7 +142,7 @@
     A.openSheet('<div style="text-align:left"><div style="font-size:18px;font-weight:800;margin-bottom:8px">Terms & Conditions</div><div style="max-height:62vh;overflow:auto;padding-right:4px" id="tc-body">'+tcHTML()+'</div><button class="btn outline" style="margin-top:12px" onclick="Ascendin.closeAll()">CLOSE</button></div>');
   };
 
-  /* --- organized auth: two separate pages, auto-home after signup/login --- */
+  /* --- organized auth: signup + login tabs on ONE page, password, auto-home --- */
 (function(){
   var A=window.Ascendin;
   function hash(s){var h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))|0;}return 'h'+(h>>>0);}
@@ -153,12 +153,8 @@
   var hasAccounts=localStorage.getItem('asc_cred_index')!==null;
   var mode=hasAccounts?'login':'signup';
 
-  function signupPage(){
-    return '<div class="auth-card" style="text-align:left">'+
-      '<div class="center" style="margin-bottom:6px"><div style="font-family:\'Space Grotesk\',sans-serif;font-weight:700;font-size:26px;letter-spacing:2px">ASCENDIN</div><div class="muted small">INVEST TODAY. GROW TOMORROW.</div></div>'+
-      '<div style="font-size:20px;font-weight:700;margin:16px 0 6px">Create your account</div>'+
-      '<div class="muted small" style="margin-bottom:14px">Join Ascendin with your mobile number, email and a strong password. You will go straight to your dashboard.</div>'+
-      '<div class="muted small">Mobile number (MTN / Airtel)</div>'+
+  function signupFields(){
+    return '<div class="muted small">Mobile number (MTN / Airtel)</div>'+
       '<div class="field"><span class="pre">+256</span><input id="au-phone" type="tel" inputmode="numeric" placeholder="7XXXXXXXX"></div>'+
       '<div class="muted small" style="margin-top:8px">Email address</div>'+
       '<div class="field"><input id="au-email" type="email" placeholder="you@example.com"></div>'+
@@ -167,33 +163,35 @@
       '<div class="field" style="margin-top:8px"><input id="au-pw2" type="password" placeholder="Confirm password"></div>'+
       '<div class="muted small" style="margin-top:8px">Date of birth (18+ only)</div>'+
       '<div class="field"><input id="au-dob" type="date"></div>'+
-      '<label style="display:flex;gap:8px;align-items:flex-start;margin:12px 0;font-size:12.5px;text-align:left"><input type="checkbox" id="au-tc" style="margin-top:2px"><span>I am 18+ and I have read and agree to the <span class="link" id="au-tc-open">Terms & Conditions</span></span></label>'+
-      '<input type="hidden" id="auth-phone" value="">'+
-      '<div class="small down" id="auth-err2" style="min-height:16px"></div>'+
-      '<button class="btn green" style="margin-top:10px;width:100%" id="auth-go">CREATE ACCOUNT & CONTINUE</button>'+
-      '<div class="muted small center" style="margin-top:14px">Already have an account? <span class="link" id="auth-switch">Log in</span></div>'+
-    '</div>';
+      '<label style="display:flex;gap:8px;align-items:flex-start;margin:12px 0;font-size:12.5px;text-align:left"><input type="checkbox" id="au-tc" style="margin-top:2px"><span>I am 18+ and I have read and agree to the <span class="link" id="au-tc-open">Terms & Conditions</span></span></label>';
   }
-  function loginPage(){
-    return '<div class="auth-card" style="text-align:left">'+
-      '<div class="center" style="margin-bottom:6px"><div style="font-family:\'Space Grotesk\',sans-serif;font-weight:700;font-size:26px;letter-spacing:2px">ASCENDIN</div><div class="muted small">INVEST TODAY. GROW TOMORROW.</div></div>'+
-      '<div style="font-size:20px;font-weight:700;margin:16px 0 6px">Welcome back</div>'+
-      '<div class="muted small" style="margin-bottom:14px">Log in with your mobile number and password to reach your wallet, stocks and bonds.</div>'+
-      '<div class="muted small">Mobile number</div>'+
+  function loginFields(){
+    return '<div class="muted small">Mobile number</div>'+
       '<div class="field"><span class="pre">+256</span><input id="au-phone" type="tel" inputmode="numeric" placeholder="7XXXXXXXX"></div>'+
       '<div class="muted small" style="margin-top:8px">Password</div>'+
-      '<div class="field"><input id="au-pw" type="password" placeholder="Your password"></div>'+
+      '<div class="field"><input id="au-pw" type="password" placeholder="Your password"></div>';
+  }
+  function authHTML(){
+    return '<div class="auth-card" style="text-align:left">'+
+      '<div class="center" style="margin-bottom:6px"><div style="font-family:\'Space Grotesk\',sans-serif;font-weight:700;font-size:26px;letter-spacing:2px">ASCENDIN</div><div class="muted small">INVEST TODAY. GROW TOMORROW.</div></div>'+
+      '<div class="row2" style="margin:12px 0">'+
+        '<button class="btn outline pay-tab '+(mode==='signup'?'sel':'')+'" id="auth-tab-signup">Create account</button>'+
+        '<button class="btn outline pay-tab '+(mode==='login'?'sel':'')+'" id="auth-tab-login">Log in</button>'+
+      '</div>'+
+      (mode==='signup'?signupFields():loginFields())+
       '<input type="hidden" id="auth-phone" value="">'+
       '<div class="small down" id="auth-err2" style="min-height:16px"></div>'+
-      '<button class="btn green" style="margin-top:10px;width:100%" id="auth-go">LOG IN</button>'+
-      '<div class="muted small center" style="margin-top:14px">New to Ascendin? <span class="link" id="auth-switch">Create account</span></div>'+
+      '<button class="btn green" style="margin-top:10px;width:100%" id="auth-go">'+(mode==='signup'?'CREATE ACCOUNT & CONTINUE':'LOG IN')+'</button>'+
+      '<div class="muted small center" style="margin-top:12px">'+(mode==='signup'?'Already have an account? <span class="link" id="auth-switch">Log in</span>':'New to Ascendin? <span class="link" id="auth-switch">Create account</span>')+'</div>'+
     '</div>';
   }
   function mountAuth(){
     var wrap=document.querySelector('#view-auth .auth-wrap');
     if(!wrap) return;
-    wrap.innerHTML=(mode==='login'?loginPage():signupPage());
-    var sw=A.$('auth-switch'); if(sw) sw.onclick=function(){ mode=(mode==='login'?'signup':'login'); mountAuth(); };
+    wrap.innerHTML=authHTML();
+    A.$('auth-tab-signup').onclick=function(){ mode='signup'; mountAuth(); };
+    A.$('auth-tab-login').onclick=function(){ mode='login'; mountAuth(); };
+    var sw=A.$('auth-switch'); if(sw) sw.onclick=function(){ mode=(mode==='signup'?'login':'signup'); mountAuth(); };
     var tco=A.$('au-tc-open'); if(tco) tco.onclick=function(ev){ ev.preventDefault(); A.openTC(); };
     A.$('auth-go').onclick=submitAuth;
   }
