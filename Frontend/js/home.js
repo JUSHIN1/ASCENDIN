@@ -1,5 +1,28 @@
 (function(){
   var A = window.Ascendin;
+  /* ===== EXTRA NEWS - self-contained, deduped ===== */
+  (function(){
+    var add = [
+      { tag:'EQTY', title:'Equity Group extends rally on strong half-year numbers', teaser:'The cross-listed lender beat earnings estimates, lifting sentiment across East African banking counters.', time:'2h ago' },
+      { tag:'Guide', title:'How fractional shares let you start with UGX 500', teaser:'You do not need to buy a whole share. Here is how owning a slice of a big company works.', time:'3h ago' },
+      { tag:'Bonds', title:'Treasury auction oversubscribed as retail demand jumps', teaser:'Bank of Uganda recorded strong non-competitive bids, a sign retail appetite for fixed income is growing.', time:'5h ago' },
+      { tag:'SAFCOM', title:'Safaricom leads Nairobi bourse turnover', teaser:'M-Pesa growth continues to drive investor interest in the regional market.', time:'6h ago' },
+      { tag:'NVDA', title:'Chipmakers extend global rally on AI demand', teaser:'Semiconductor names led US indices as data-centre orders beat forecasts again.', time:'8h ago' },
+      { tag:'Guide', title:'Reading a stock chart in 60 seconds', teaser:'Trend, volume and timeframes - the three things worth checking before you buy.', time:'10h ago' },
+      { tag:'MTNU', title:'MTN Uganda volumes climb after new data bundles launch', teaser:'Retail traders are watching the counter closely after management raised subscriber guidance.', time:'12h ago' },
+      { tag:'Bonds', title:'Centenary Bank bond gets strong demand at close', teaser:'The 48-month corporate bond priced at the tight end of guidance as institutions piled in.', time:'1d ago' },
+      { tag:'TSLA', title:'Tesla deliveries beat Street expectations', teaser:'Q2 deliveries topped 500k units, sending the stock higher in extended hours.', time:'1d ago' },
+      { tag:'Guide', title:'What is a treasury bill and why does it matter?', teaser:'Short-term government paper is the foundation of every fixed-income portfolio. Here is the basics.', time:'1d ago' },
+      { tag:'NPN', title:'Naspers rallies on Tencent earnings beat', teaser:'The South African internet group gained as its core Chinese holding posted strong ad revenue growth.', time:'2d ago' },
+      { tag:'DANGCEM', title:'Dangote Cement expands capacity across West Africa', teaser:'New grinding plants in Cameroon and Ghana are expected to boost revenue by 18% next year.', time:'2d ago' },
+      { tag:'Guide', title:'Diversification in five minutes', teaser:'Spreading your money across stocks, bonds and regions is the simplest way to manage risk.', time:'3d ago' },
+      { tag:'AAPL', title:'Apple unveils new AI features at developer conference', teaser:'On-device intelligence and a refreshed Siri headline the next iOS update.', time:'3d ago' },
+      { tag:'Ascendin', title:'P2P trading volume crosses UGX 1 billion milestone', teaser:'User-to-user share transfers continue to grow as the community expands.', time:'4d ago' }
+    ];
+    var have = {};
+    A.NEWS.forEach(function(x){ have[x.title] = true; });
+    add.forEach(function(n){ if (!have[n.title]) A.NEWS.push(n); });
+  })();
   A.Home = {};
 
   A.Home.render = function(){

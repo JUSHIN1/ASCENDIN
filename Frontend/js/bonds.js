@@ -1,6 +1,43 @@
 /* Bonds - blue accent, no gold. */
 (function(){
-  var A = window.Ascendin;
+  var A = window.Ascendin;  /* ===== EXTRA BONDS - self-contained, deduped ===== */
+  (function(){
+    var add = [
+      { id:'ug-tb-182', name:'Bank of Uganda 182-Day Bill', issuer:'Bank of Uganda', type:'Treasury Bill', rate:13.5, months:6, min:20000, risk:'Low', about:'Six-month central bank bill, sold at a discount and paid at face value.' },
+      { id:'ug-tb-364', name:'Bank of Uganda 364-Day Bill', issuer:'Bank of Uganda', type:'Treasury Bill', rate:14.5, months:12, min:20000, risk:'Low', about:'One-year treasury bill, the most liquid short-term instrument in Uganda.' },
+      { id:'ug-gb-3y', name:'Uganda 3-Year Treasury Bond', issuer:'Government of Uganda', type:'Government Bond', rate:16.8, months:36, min:50000, risk:'Low', about:'Medium-term sovereign bond matching school-fee and project timelines.' },
+      { id:'ug-gb-5y', name:'Uganda 5-Year Treasury Bond', issuer:'Government of Uganda', type:'Government Bond', rate:17.5, months:60, min:50000, risk:'Low', about:'Five-year government bond paying semi-annual coupons.' },
+      { id:'ug-gb-10y', name:'Uganda 10-Year Treasury Bond', issuer:'Government of Uganda', type:'Government Bond', rate:18.2, months:120, min:100000, risk:'Low', about:'Long-dated sovereign bond locking in today\'s rates for a decade.' },
+      { id:'ug-gb-15y', name:'Uganda 15-Year Infrastructure Bond', issuer:'Government of Uganda', type:'Government Bond', rate:18.9, months:180, min:100000, risk:'Medium', about:'Funds national roads and energy; pays a premium for its long tenure.' },
+      { id:'cby-bond', name:'Centenary Bank Income Bond', issuer:'Centenary Bank', type:'Corporate Bond', rate:19.5, months:48, min:100000, risk:'Medium', about:'Corporate bond from Uganda\'s largest microfinance-born bank.' },
+      { id:'sbu-bond', name:'Stanbic Business Growth Bond', issuer:'Stanbic Bank Uganda', type:'Corporate Bond', rate:20.0, months:36, min:100000, risk:'Medium', about:'Funds SME lending across Uganda; competitive corporate coupon.' },
+      { id:'dfcu-bond', name:'dfcu SME Lending Bond', issuer:'dfcu Bank', type:'Corporate Bond', rate:19.2, months:42, min:100000, risk:'Medium', about:'Funds small-business lending; semi-annual coupons.' },
+      { id:'umeme-bond', name:'Umeme Grid Upgrade Bond', issuer:'Umeme Ltd', type:'Corporate Bond', rate:21.0, months:60, min:200000, risk:'Medium', about:'Finances distribution grid upgrades; highest coupon in the book.' },
+      { id:'mtnu-bond', name:'MTN Uganda Network Bond', issuer:'MTN Uganda', type:'Corporate Bond', rate:20.4, months:48, min:200000, risk:'Medium', about:'Funds 4G/5G rollout; backed by telecom cash flows.' },
+      { id:'kla-water', name:'Kampala Water & Drainage Bond', issuer:'Kampala Capital City Authority', type:'Municipal Bond', rate:17.8, months:60, min:100000, risk:'Low-Medium', about:'City water and drainage works; municipal backing.' },
+      { id:'entebbe-muni', name:'Entebbe Municipal Development Bond', issuer:'Entebbe Municipal Council', type:'Municipal Bond', rate:17.2, months:48, min:50000, risk:'Low-Medium', about:'Funds market and road upgrades in Entebbe.' },
+      { id:'ke-gb-7y', name:'Kenya 7-Year Infrastructure Bond', issuer:'Government of Kenya', type:'Government Bond', rate:16.5, months:84, min:100000, risk:'Medium', about:'Kenyan sovereign infrastructure bond.' },
+      { id:'rw-gb-5y', name:'Rwanda 5-Year Development Bond', issuer:'Government of Rwanda', type:'Government Bond', rate:15.8, months:60, min:100000, risk:'Medium', about:'Rwandan development bond with strong fiscal track record.' },
+      { id:'tz-gb-6y', name:'Tanzania 6-Year Treasury Bond', issuer:'Government of Tanzania', type:'Government Bond', rate:16.2, months:72, min:100000, risk:'Medium', about:'Tanzanian sovereign bond for public projects.' },
+      { id:'gh-gb-4y', name:'Ghana 4-Year Recovery Bond', issuer:'Government of Ghana', type:'Government Bond', rate:22.0, months:48, min:100000, risk:'High', about:'High-yield Ghanaian sovereign recovery bond; higher risk.' },
+      { id:'zm-gb-5y', name:'Zambia 5-Year Sovereign Bond', issuer:'Government of Zambia', type:'Government Bond', rate:21.5, months:60, min:100000, risk:'High', about:'Zambian sovereign bond post-restructuring; higher risk.' },
+      { id:'ng-gb-5y', name:'Nigeria 5-Year FGN Bond', issuer:'Federal Government of Nigeria', type:'Government Bond', rate:19.8, months:60, min:100000, risk:'Medium', about:'Nigerian federal government bond.' },
+      { id:'za-gb-10y', name:'South Africa 10-Year R2030 Bond', issuer:'Government of South Africa', type:'Government Bond', rate:12.4, months:120, min:100000, risk:'Low', about:'Benchmark South African sovereign bond (R2030).' },
+      { id:'ma-gb-7y', name:'Morocco 7-Year Infrastructure Bond', issuer:'Government of Morocco', type:'Government Bond', rate:13.9, months:84, min:100000, risk:'Low', about:'Moroccan infrastructure sovereign bond.' },
+      { id:'eg-gb-6y', name:'Egypt 6-Year Treasury Bond', issuer:'Government of Egypt', type:'Government Bond', rate:18.6, months:72, min:100000, risk:'Medium', about:'Egyptian treasury bond with attractive carry.' },
+      { id:'safcom-bond', name:'Safaricom Kenya Corporate Bond', issuer:'Safaricom PLC', type:'Corporate Bond', rate:17.9, months:60, min:100000, risk:'Medium', about:'East Africa\'s largest telco; strong cash flows.' },
+      { id:'dangote-bond', name:'Dangote Industries Bond', issuer:'Dangote Group', type:'Corporate Bond', rate:19.6, months:60, min:200000, risk:'Medium', about:'Pan-African industrial giant; cement and refining.' },
+      { id:'equity-bond', name:'Equity Group Subordinated Bond', issuer:'Equity Group Holdings', type:'Corporate Bond', rate:18.4, months:72, min:100000, risk:'Medium', about:'Subordinated bank bond from a leading East African lender.' },
+      { id:'afdb-green', name:'African Development Bank Green Bond', issuer:'African Development Bank', type:'Green Bond', rate:14.8, months:84, min:100000, risk:'Low', about:'Multilateral green bond funding climate projects across Africa.' },
+      { id:'ifc-sme', name:'IFC SME Finance Bond', issuer:'International Finance Corp', type:'Green Bond', rate:14.2, months:60, min:100000, risk:'Low', about:'World Bank Group arm funding small businesses; very low risk.' },
+      { id:'us-tb-2y', name:'US Treasury 2-Year Note', issuer:'US Department of Treasury', type:'Government Bond', rate:4.6, months:24, min:50000, risk:'Low', about:'USD-denominated US sovereign note; global safe haven.' },
+      { id:'us-tb-10y', name:'US Treasury 10-Year Note', issuer:'US Department of Treasury', type:'Government Bond', rate:4.9, months:120, min:50000, risk:'Low', about:'The global benchmark risk-free rate.' },
+      { id:'gold-sukuk', name:'Global Sukuk Income Certificate', issuer:'Ascendin Sukuk SPV', type:'Sukuk', rate:15.5, months:60, min:100000, risk:'Low-Medium', about:'Sharia-compliant income certificate backed by tangible assets.' }
+    ];
+    var have = {};
+    A.BONDS.forEach(function(x){ have[x.id] = true; });
+    add.forEach(function(b){ if (!have[b.id]) A.BONDS.push(b); });
+  })();
   A.Bonds = { curBond:null };
 
     A.Bonds.render = function(){
