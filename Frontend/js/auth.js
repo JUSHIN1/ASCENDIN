@@ -1,4 +1,4 @@
-/* Ascendin professional authentication: separate Sign Up / Sign In pages. */
+/* Ascendin authentication: Sign Up / Sign In pages + reliable handoff to Home. */
 (function(){
   var A=window.Ascendin;
   function $(id){ return document.getElementById(id); }
@@ -14,10 +14,10 @@
    ['2. Platform Status','Ascendin is presently a demonstration platform. Prices, balances, yields and counterparties shown are simulated for illustration and do not constitute real securities, real client money or a regulated investment business unless we notify you otherwise in writing.'],
    ['3. Eligibility & Age','You must be at least 18 years old and legally capable of entering binding contracts to open an Account. By registering you warrant you are 18 or older. We may request proof of age and may close any Account held by a minor.'],
    ['4. Account Registration','You must provide a valid Ugandan mobile money number, a valid email address and a password meeting our strength rules. Keep all information accurate. One person may hold one Account. We may refuse or reverse registration where information is false or duplicated.'],
-   ['5. Credentials & Security','You are responsible for keeping your password and mobile money PIN confidential. Passwords are stored on your device as a one-way hash, never in plain text. Notify us immediately of suspected unauthorised use. We are not liable for losses caused by your failure to safeguard credentials.'],
-   ['6. Wallet, Deposits & Withdrawals','Your wallet is linked to your mobile money number. Deposits are initiated by mobile money prompt or USDT transfer to a designated reserve address. Withdrawals go to your registered number or wallet address. Telco and network fees may apply and are disclosed before confirmation. Daily limits apply.'],
-   ['7. Stocks & Fractional Shares','Stocks are offered as fractional units for illustration. Simulated prices move continuously and are not exchange quotes. Trades execute at the displayed simulated price. Ownership records exist only within your Account.'],
-   ['8. Bonds & Fixed Income','Bond products display an indicative annual rate, tenor and minimum. The calculator projects interest for convenience only and is not a guarantee of return. Capital is committed for the chosen tenor.'],
+   ['5. Credentials & Security','You are responsible for keeping your password and mobile money PIN confidential. Passwords are stored on your device as a one-way hash, never in plain text. Notify us immediately of suspected unauthorised use.'],
+   ['6. Wallet, Deposits & Withdrawals','Your wallet is linked to your mobile money number. Deposits are initiated by mobile money prompt or USDT transfer to a designated reserve address. Withdrawals go to your registered number or wallet address. Telco and network fees may apply and are disclosed before confirmation.'],
+   ['7. Stocks & Fractional Shares','Stocks are offered as fractional units for illustration. Simulated prices move continuously and are not exchange quotes. Trades execute at the displayed simulated price.'],
+   ['8. Bonds & Fixed Income','Bond products display an indicative annual rate, tenor and minimum. The calculator projects interest for convenience only and is not a guarantee of return.'],
    ['9. Peer-to-Peer Trading','P2P lets you offer holdings to other Users via one-time codes. Units are held in escrow until the buyer redeems. You are responsible for the price you set and for sharing codes only with intended buyers.'],
    ['10. Crypto (USDT) Transfers','USDT deposits and withdrawals run on selected networks (TRC20/BEP20). Credits occur after network confirmation and reserve verification. Sending on an unsupported network or to a wrong address may cause irreversible loss.'],
    ['11. Fees & Charges','Mobile money deposits are free. Withdrawal fees, where applicable, are shown before confirmation. We may introduce or change fees with prior notice; continued use constitutes acceptance.'],
@@ -77,14 +77,25 @@
       '<div style="text-align:center;font-size:12.5px;color:var(--muted);margin-top:16px">New to Ascendin? <span class="link" onclick="Ascendin.AuthUI.show(\'signup\')">Create an account</span></div>'+
     '</div>';
   }
-
   function mount(force){
     var wrap=document.querySelector('#view-auth .auth-wrap');
     if(!wrap) return;
     if(!force && $('au-phone')) return;
     wrap.innerHTML=(mode==='signup'?signupScreen():signinScreen());
   }
-  function goHome(){ setTimeout(function(){ if(A.state&&A.state.phone) A.go('home'); },80); }
+
+  /* The handoff: original submit first; if Home is not live in 500ms,
+     reload into the app's own boot path which restores the session. */
+  function handoff(phone){
+    var hp=$('auth-phone'); if(hp) hp.value=phone;
+    localStorage.setItem('ascendin-session', phone);
+    try{ proceed(); }catch(e){ console.error('proceed:',e); }
+    setTimeout(function(){
+      var home=$('view-home');
+      var ok = A.state && A.state.phone===phone && home && home.classList.contains('active');
+      if(!ok){ location.reload(); }
+    }, 500);
+  }
 
   A.AuthUI={
     show:function(m){ mode=m; mount(true); },
@@ -94,7 +105,7 @@
       var phone=($('au-phone').value||'').replace(/\D/g,'');
       var pw=($('au-pw').value||'');
       if(phone.length<9){ err.textContent='Enter a valid Ugandan mobile number.'; return; }
-      if(mode==='signup'){
+      if($('au-email')){
         var email=($('au-email').value||'').trim().toLowerCase();
         var pw2=($('au-pw2').value||'');
         var dob=($('au-dob').value||'');
@@ -103,7 +114,7 @@
         if(pw!==pw2){ err.textContent='Passwords do not match.'; return; }
         var ag=ageOf(dob); if(ag<18){ err.textContent='You must be 18 years or older to open an account.'; return; }
         if(ag>120){ err.textContent='Enter a valid date of birth.'; return; }
-        if(!$('au-tc').checked){ err.textContent='You must read and accept the Terms & Conditions.'; return; }
+        var tcBox=$('au-tc'); if(!tcBox||!tcBox.checked){ err.textContent='You must read and accept the Terms & Conditions.'; return; }
         var idx={}; try{ idx=JSON.parse(localStorage.getItem('asc_cred_index')||'{}'); }catch(e){}
         if(idx[phone]){ err.textContent='This number already has an account. Sign in instead.'; return; }
         if(idx['e:'+email]){ err.textContent='This email is already registered.'; return; }
@@ -111,73 +122,24 @@
         localStorage.setItem('asc_cred_index',JSON.stringify(idx));
         localStorage.setItem('asc_cred_'+phone,JSON.stringify({pw:hash(pw),email:email,dob:dob,tc:true,ts:Date.now()}));
         localStorage.setItem('asc_tc_v1','1');
-        $('auth-phone').value=phone;
-        proceed(); goHome();
+        if(!localStorage.getItem('ascendin-acct-'+phone)){
+          localStorage.setItem('ascendin-acct-'+phone, JSON.stringify({phone:phone,balance:0,holdings:{},bondHold:{},transactions:[],alerts:[],createdAt:Date.now()}));
+        }
+        handoff(phone);
       } else {
         var saved=null; try{ saved=JSON.parse(localStorage.getItem('asc_cred_'+phone)||'null'); }catch(e){}
-        if(!saved){ err.textContent='No account for this number. Create one first.'; return; }
-        if(hash(pw)!==saved.pw){ err.textContent='Incorrect password.'; return; }
-        $('auth-phone').value=phone;
-        proceed(); goHome();
+        if(!saved){ err.textContent='No account found for this number. Create one first.'; return; }
+        if(hash(pw)!==saved.pw){ err.textContent='Incorrect password. Try again.'; return; }
+        handoff(phone);
       }
     }
   };
   A.AuthSubmit=function(){ A.AuthUI.submit(); };
 
-  /* bonds scrolling tape (restored) */
+  /* bonds scrolling tape */
   function tapeHTML(){ var h=''; for(var r=0;r<2;r++){ for(var i=0;i<A.BONDS.length;i++){ var b=A.BONDS[i]; h+='<div class="bt-chip" onclick="Ascendin.Bonds.openBond(\''+b.id+'\')"><span class="bt-name">'+b.name+'</span><span class="bt-rate">'+b.rate.toFixed(1)+'%</span></div>'; } } return h; }
   function ensureTape(){ var vb=A.$('view-bonds'); if(!vb) return; if(!vb.querySelector('.bond-tapewrap')){ var w=document.createElement('div'); w.className='tickerwrap bond-tapewrap'; w.innerHTML='<div class="tickertrack" id="bond-ticker"></div>'; var bg=A.$('bonds-bg'); if(bg&&bg.nextSibling) vb.insertBefore(w,bg.nextSibling); else vb.insertBefore(w,vb.firstChild); } var t=A.$('bond-ticker'); if(t) t.innerHTML=tapeHTML(); }
   if(A.Bonds){ var bR=A.Bonds.render; A.Bonds.render=function(){ bR.apply(A.Bonds,arguments); ensureTape(); }; }
 
   mount(false); setTimeout(function(){mount(false);},60); setTimeout(function(){mount(false);},400); setTimeout(function(){mount(false);},900);
-})();
-
-/* auth fix: deterministic enter-home after signup/login */
-(function(){
-  var A=window.Ascendin;
-  function $(id){return document.getElementById(id);}
-  function hash(s){var h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))|0;}return 'h'+(h>>>0);}
-  function strong(pw){ return pw.length>=8 && /[A-Z]/.test(pw) && /[a-z]/.test(pw) && /[0-9]/.test(pw) && /[^A-Za-z0-9]/.test(pw); }
-  function ageOf(dob){ var d=new Date(dob); if(isNaN(d))return -1; var t=new Date(); var a=t.getFullYear()-d.getFullYear(); var m=t.getMonth()-d.getMonth(); if(m<0||(m===0&&t.getDate()<d.getDate()))a--; return a; }
-  function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
-  function enterApp(phone){
-    try{
-      localStorage.setItem('ascendin-session', phone);
-      var raw=localStorage.getItem('ascendin-acct-'+phone);
-      if(raw){ var st=JSON.parse(raw); if(A.state&&st){ for(var k in st){ A.state[k]=st[k]; } } }
-      if(A.state){ A.state.phone=phone; if(A.save) A.save(); }
-      if(A.renderAll) A.renderAll();
-      if(A.go) A.go('home');
-    }catch(e){}
-  }
-  A.AuthUI.submit=function(){
-    var err=$('auth-err2');
-    var phone=($('au-phone').value||'').replace(/\D/g,'');
-    var pw=($('au-pw').value||'');
-    if(phone.length<9){ if(err) err.textContent='Enter a valid Ugandan mobile number.'; return; }
-    if($('au-email')){
-      var email=($('au-email').value||'').trim().toLowerCase();
-      var pw2=($('au-pw2').value||'');
-      var dob=($('au-dob').value||'');
-      if(!validEmail(email)){ err.textContent='Enter a valid email address.'; return; }
-      if(!strong(pw)){ err.textContent='Password too weak: need 8+ chars with upper, lower, number and symbol.'; return; }
-      if(pw!==pw2){ err.textContent='Passwords do not match.'; return; }
-      var ag=ageOf(dob); if(ag<18){ err.textContent='You must be 18 years or older to open an account.'; return; }
-      if(ag>120){ err.textContent='Enter a valid date of birth.'; return; }
-      var tcBox=$('au-tc'); if(!tcBox||!tcBox.checked){ err.textContent='You must read and accept the Terms & Conditions.'; return; }
-      var idx={}; try{ idx=JSON.parse(localStorage.getItem('asc_cred_index')||'{}'); }catch(e){}
-      if(idx[phone]){ err.textContent='This number already has an account. Sign in instead.'; return; }
-      if(idx['e:'+email]){ err.textContent='This email is already registered.'; return; }
-      idx[phone]=true; idx['e:'+email]=phone;
-      localStorage.setItem('asc_cred_index',JSON.stringify(idx));
-      localStorage.setItem('asc_cred_'+phone,JSON.stringify({pw:hash(pw),email:email,dob:dob,tc:true,ts:Date.now()}));
-      localStorage.setItem('asc_tc_v1','1');
-      enterApp(phone);
-    } else {
-      var saved=null; try{ saved=JSON.parse(localStorage.getItem('asc_cred_'+phone)||'null'); }catch(e){}
-      if(!saved){ err.textContent='No account found for this number. Create one first.'; return; }
-      if(hash(pw)!==saved.pw){ err.textContent='Incorrect password. Try again.'; return; }
-      enterApp(phone);
-    }
-  };
 })();
