@@ -52,40 +52,7 @@
   };
 
   var hR=A.Home.render;
-  A.Home.render=function(){
-    try{ hR.apply(A.Home,arguments); }catch(e){}
-    var nl=A.$('news-list');
-    if(nl&&!nl.querySelector('.news-track')){ var inner=nl.innerHTML; if(inner){ nl.innerHTML='<div class="news-track">'+inner+inner+'</div>'; var t=nl.firstChild; if(t) t.style.animationDuration=(A.NEWS.length*7)+'s'; } }
-  };
-
-  A.Stocks.renderStockTabs=function(){
-    var tabs=['All','USE','Africa','New','US','World','ETFs'],h='';
-    for(var i=0;i<tabs.length;i++){
-      var act=A.Stocks.stockTab===tabs[i]?' active':'';
-      var lab=tabs[i]==='USE'?'USE listed':tabs[i]==='New'?'New listings':tabs[i];
-      h+='<div class="tab'+act+'" onclick="Ascendin.Stocks.setStockTab(\''+tabs[i]+'\')">'+lab+'</div>';
-    }
-    A.$('stock-tabs').innerHTML=h;
-  };
-  A.Stocks.renderStocks=function(){
-    var q=(A.$('stock-search').value||'').toLowerCase(),h='',t=A.Stocks.stockTab;
-    for(var i=0;i<A.STOCKS.length;i++){
-      var s=A.STOCKS[i];
-      if(t==='USE'&&s.market!=='USE')continue;
-      if(t==='New'&&s.market!=='NEW')continue;
-      if(t==='US'&&s.market!=='US')continue;
-      if(t==='ETFs'&&s.market!=='ETF')continue;
-      if(t==='Africa'&&s.market!=='AFR'&&s.market!=='USE')continue;
-      if(t==='World'&&s.market!=='WRD')continue;
-      if(q&&s.name.toLowerCase().indexOf(q)<0&&s.id.toLowerCase().indexOf(q)<0)continue;
-      h+='<div class="asset" onclick="Ascendin.Stocks.openStock(\''+s.id+'\')">'+
-        '<div class="logo" style="background:'+s.color+'; color:'+(s.tc||'#fff')+'">'+(A.logoHTML?A.logoHTML(s):s.L)+'</div>'+
-        '<div style="flex:1"><div class="bold">'+s.name+'</div><div class="muted small">'+s.id+' - '+s.sector+'</div></div>'+
-        '<div style="text-align:right"><div class="bold">'+(s.cur==='USD'?'$'+s.price.toFixed(2):'UGX '+A.fmt(s.price))+'</div>'+A.chgHTML(s.chg)+'</div></div>';
-    }
-    A.$('stock-list').innerHTML=h||'<div class="muted center" style="padding:30px">No stocks match your search.</div>';
-  };
-
+  A.Home.render=function(){ try{ hR.apply(A.Home,arguments); }catch(e){} };
   A.Bonds.initVideoX=function(){
     var v=A.$('bonds-video'),wrap=A.$('bonds-bg');
     if(!v||!wrap||!A.Home.videoList) return;
