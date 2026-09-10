@@ -388,3 +388,13 @@
 .auth-trust span{font-size:10.5px;color:var(--muted);background:var(--card);border:1px solid var(--border);padding:4px 9px;border-radius:999px}
 .auth-foot{font-size:11px;color:var(--muted);text-align:center;margin-top:16px;line-height:1.5}
 #view-auth .field{margin-bottom:10px}
+
+/* bonds video slightly visible + tape */
+#bonds-bg video{opacity:.38}
+#bonds-bg .home-bg-fade{background:linear-gradient(180deg,rgba(11,14,20,.45) 0%,rgba(11,14,20,.62) 45%,var(--bg) 96%)}
+#view-bonds .bond-card,#view-bonds .bond-hero-card{background:rgba(18,24,33,.78)}
+.bond-tapewrap{margin:0 0 12px}
+.bond-tapewrap .tickertrack{animation-duration:40s}
+.bt-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);margin-right:8px;cursor:pointer;flex:0 0 auto}
+.bt-name{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap}
+.bt-rate{font-size:12px;font-weight:800;color:var(--up)}
