@@ -4,16 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>Ascendin - Stocks, Bonds and Mobile Money Investing</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  
 </head>
 <body>
   <div id="app">
 
-    <!-- LOGIN / CREATE ACCOUNT -->
+    <!-- LOGIN -->
     <section class="view" id="view-auth">
       <div class="auth-wrap">
         <div class="auth-card center">
@@ -34,7 +30,6 @@
     </section>
 
     <!-- HOME -->
-        <!-- HOME -->
     <section class="view" id="view-home">
       <div class="home-bg" id="home-bg">
         <video id="home-video" autoplay muted loop playsinline preload="metadata"></video>
@@ -46,6 +41,7 @@
       </div>
       <div class="muted hero-sub">Good to see you</div>
       <div class="hero-title">What's moving today</div>
+      <div class="brief-card" id="morning-brief"></div>
       <div class="tickerwrap"><div class="tickertrack" id="heat-ticker-home"></div></div>
       <div class="grid3">
         <button class="qact" onclick="Ascendin.go('stocks')" id="qa-stk"></button>
@@ -54,23 +50,27 @@
       </div>
       <div class="home-cols">
         <div>
-          <div class="sect">Testimonials</div>
-          <div class="card testi-wrap" id="leader-list"><div class="testi-track" id="testi-track"></div></div>
+          <div class="sect">People making gains</div>
+          <div class="card" style="padding:4px 16px" id="leader-list"></div>
         </div>
         <div>
           <div class="sect">Live on Ascendin</div>
-          <div class="card testi-wrap" id="activity-list"><div class="testi-track" id="activity-track"></div></div>
+          <div class="card" style="padding:4px 16px" id="activity-list"></div>
         </div>
       </div>
+      <div class="sect">Testimonials</div>
+      <div class="card" style="padding:4px 16px" id="testimonial-list"></div>
+      <div class="sect">Upcoming income</div>
+      <div class="card" style="padding:4px 16px" id="income-cal"></div>
       <div class="sect">Market news</div>
-      <div id="news-list" class="news-grid"></div>
+      <div class="news-auto"><div id="news-list"></div></div>
     </section>
 
     <!-- STOCKS -->
     <section class="view" id="view-stocks">
       <div class="tickerwrap"><div class="tickertrack" id="heat-ticker-stocks"></div></div>
       <div class="searchbar"><span id="search-ic"></span><input id="stock-search" placeholder="Search by ticker or name" oninput="Ascendin.Stocks.renderStocks()"></div>
-            <div class="tabs" id="stock-tabs"></div>
+      <div class="tabs" id="stock-tabs"></div>
       <div id="stock-list"></div>
     </section>
 
@@ -90,19 +90,15 @@
       <div class="tf-pills" id="tf-pills"></div>
       <div class="center muted small frac-line">This asset is a fractional share - <span class="link" onclick="Ascendin.openLearn('fractional')">see how it works</span></div>
       <div class="card"><div class="sect">About company</div><div id="sd-about" class="lh"></div></div>
-      <div class="card">
-        <div class="sect">How buying stocks works</div>
-        <div class="muted small lh">When you buy a stock on Ascendin, you purchase units that represent a share of that company's value. The price moves with demand: more buyers push it up, more sellers push it down. Your units sit in your portfolio; you can hold them or sell them back. Value can go up or down, so only invest what you can afford to have tied up.</div>
-      </div>
       <div class="row2 buy-row">
         <button class="btn blue" style="flex:5" onclick="Ascendin.Stocks.openBuy()">Buy</button>
-              <button class="iconbtn dots-btn" onclick="Ascendin.Stocks.openAlerts()" id="sd-bell"></button>
+        <button class="iconbtn dots-btn" onclick="Ascendin.Stocks.openAlerts()" id="sd-bell"></button>
         <button class="iconbtn dots-btn" onclick="Ascendin.Stocks.openMoreActions()" id="sd-dots"></button>
       </div>
     </section>
 
     <!-- BONDS -->
-        <section class="view" id="view-bonds">
+    <section class="view" id="view-bonds">
       <div class="bond-hero">
         <div>
           <div class="muted small">Top rate today</div>
@@ -134,11 +130,7 @@
         <div id="bd-calc" class="small" style="margin-top:10px"></div>
       </div>
       <div class="card"><div class="sect">About this bond</div><div id="bd-desc" class="lh muted small"></div></div>
-      <div class="card">
-        <div class="sect">How bonds work</div>
-        <div class="muted small lh">A bond is a loan you give to a government or company for a fixed period, in exchange for regular interest. Unlike stocks, the price does not swing with daily trading: you agree on a rate and tenure upfront, then get your principal back plus interest at maturity.</div>
-      </div>
-            <button class="btn green" onclick="Ascendin.Bonds.openBondBuy()">Invest in this bond</button>
+      <button class="btn green" onclick="Ascendin.Bonds.openBondBuy()">Invest in this bond</button>
     </section>
 
     <!-- ACCOUNT -->
@@ -159,21 +151,23 @@
         <div class="card center"><div class="muted small">Invested</div><div class="bold" id="acc-invested">UGX 0</div></div>
         <div class="card center"><div class="muted small">This month</div><div class="bold up" id="acc-month">+UGX 0</div></div>
       </div>
+      <div class="card">
+        <div class="muted small" style="margin-bottom:10px">Allocation</div>
+        <div class="alloc-bar" id="alloc-bar"></div>
+        <div class="alloc-legend" id="alloc-legend"></div>
+      </div>
       <div class="muted small sec-label">My Account</div>
       <div class="card menu">
         <div class="item" onclick="Ascendin.openNotifs()"><span id="ic-bell"></span>Notifications<span class="sp"></span></div>
-        <div class="item" onclick="Ascendin.toast('Manage account: name, KYC with National ID, linked numbers')"><span id="ic-user"></span>Manage account<span class="sp"></span></div>
         <div class="item" onclick="Ascendin.go('investments')"><span id="ic-chart"></span>My Investments<span class="sp"></span></div>
         <div class="item" onclick="Ascendin.go('statement')"><span id="ic-receipt"></span>Statement<span class="sp"></span></div>
-        <div class="item" onclick="Ascendin.toast('Rewards: refer a friend and earn UGX 5,000 when they invest')"><span id="ic-gift"></span>Rewards<span class="sp"></span></div>
-                <div class="item" onclick="Ascendin.go('p2pHub')"><span id="ic-share"></span>P2P Trading<span class="sp"></span><span class="pill" style="background:rgba(63,203,110,.15);color:var(--up)">NEW</span></div>
+        <div class="item" onclick="Ascendin.go('p2pHub')"><span id="ic-share"></span>P2P Trading<span class="sp"></span></div>
         <div class="item" onclick="Ascendin.toggleTheme()"><span id="ic-sun"></span>Dark Theme<span class="sp"></span><div class="switch on" id="theme-switch"></div></div>
       </div>
       <div class="muted small sec-label">General</div>
       <div class="card menu">
         <div class="item" onclick="Ascendin.toast('Help Center: chat with support, FAQs, fees explained')"><span id="ic-help"></span>Help Center<span class="sp"></span></div>
         <div class="item" onclick="Ascendin.toast('App store link goes here in the live build')"><span id="ic-dl"></span>Download the App<span class="sp"></span></div>
-        <div class="item" onclick="Ascendin.toast('More on Ascendin: savings goals, insurance and loans are on the roadmap')"><span id="ic-mega"></span>More on Ascendin<span class="sp"></span></div>
       </div>
       <div class="card"><div class="danger" onclick="Ascendin.Auth.logout()">Log Out</div></div>
       <div class="muted small center">Ascendin - Invest today. Grow tomorrow.<br><span id="sync-note">Cloud sync: checking...</span></div>
@@ -182,31 +176,51 @@
     <!-- DEPOSIT -->
     <section class="view" id="view-deposit">
       <div class="topbar"><button class="iconbtn" onclick="Ascendin.go('account')" id="dep-back"></button><h1>Deposit</h1></div>
-            <div class="row2" style="margin-bottom:12px">
+      <div class="row2" style="margin-bottom:12px">
         <button class="btn outline pay-tab sel">Mobile money</button>
         <button class="btn outline pay-tab" onclick="Ascendin.go('deposit-crypto')">Crypto USDT</button>
       </div>
       <div class="dep-head" id="dep-head">Deposit</div>
       <div class="muted lh">Easily deposit money on Ascendin using mobile money. Simply enter the amount to deposit below.</div>
-      <div class="dep-ps lh">PS! Make sure that you have a mobile money account and sufficient funds to make a deposit.</div>
       <div class="card">
         <div class="phone-card">
           <span class="badge mtn" id="dep-badge">M</span>
           <div><div class="muted small">Your mobile number</div><div class="bold" id="dep-phone"></div></div>
         </div>
-        <div class="amt-row"><span class="muted">Amount</span><span class="muted small">Telco fees apply</span></div>
         <div class="field"><span class="pre">UGX</span><input id="dep-amount" type="number" inputmode="numeric" placeholder="100000"></div>
         <div class="muted small">Min: 500, Max: 5,000,000</div>
         <div class="small down dep-err" id="dep-err"></div>
         <button class="btn green dep-btn" id="dep-btn" onclick="Ascendin.Deposit.startDeposit()">DEPOSIT</button>
       </div>
-      <div class="dep-next"><span class="bold">What happens next?</span> <span class="muted">Confirm the deposit request on your phone by entering your mobile money PIN.</span></div>
+    </section>
+
+    <!-- DEPOSIT CRYPTO -->
+    <section class="view" id="view-deposit-crypto">
+      <div class="topbar"><button class="iconbtn" onclick="Ascendin.go('deposit')" id="depc-back"></button><h1>Deposit USDT</h1></div>
+      <div class="row2" style="margin-bottom:12px">
+        <button class="btn outline pay-tab" onclick="Ascendin.go('deposit')">Mobile money</button>
+        <button class="btn outline pay-tab sel">Crypto USDT</button>
+      </div>
+      <div class="muted small lh">Send USDT from Binance or any wallet to the Ascendin reserve address. Your wallet credits after 1 network confirmation.</div>
+      <div class="row2" style="margin:12px 0">
+        <button class="btn outline pay-tab sel" id="depc-trc" onclick="Ascendin.Crypto.setChain('TRC20','depc')">TRC20</button>
+        <button class="btn outline pay-tab" id="depc-bep" onclick="Ascendin.Crypto.setChain('BEP20','depc')">BEP20</button>
+      </div>
+      <div class="card center">
+        <img id="depc-qr" width="140" height="140" alt="QR" style="border-radius:12px;background:#fff;padding:8px">
+        <div class="mono small" id="depc-addr" style="word-break:break-all;margin:10px 0;line-height:1.4"></div>
+        <button class="btn outline" onclick="Ascendin.Crypto.copyAddr('depc')">COPY ADDRESS</button>
+      </div>
+      <div class="muted small">Amount (UGX)</div>
+      <div class="field"><span class="pre">UGX</span><input id="depc-amt" type="number" inputmode="numeric" placeholder="100000" oninput="Ascendin.Crypto.upd('depc')"></div>
+      <div class="statline"><span class="muted">You send</span><span class="bold" id="depc-usdt">0.00 USDT</span></div>
+      <button class="btn blue" style="margin-top:10px" onclick="Ascendin.Crypto.submitDeposit()">I HAVE SENT USDT</button>
     </section>
 
     <!-- WITHDRAW -->
     <section class="view" id="view-withdraw">
       <div class="topbar"><button class="iconbtn" onclick="Ascendin.go('account')" id="wd-back"></button><h1>Withdraw</h1></div>
-            <div class="row2" style="margin-bottom:12px">
+      <div class="row2" style="margin-bottom:12px">
         <button class="btn outline pay-tab sel">Mobile money</button>
         <button class="btn outline pay-tab" onclick="Ascendin.go('withdraw-crypto')">Crypto USDT</button>
       </div>
@@ -214,20 +228,37 @@
         <div style="flex:1">Due to telco fees, a small withdrawal fee applies. MTN MoMo: 1.5%. Airtel Money: 1.0%. Deposits remain free. <span class="link" onclick="Ascendin.openLearn('fees')">Learn More</span></div>
         <div class="x-btn" onclick="document.getElementById('wd-warn').style.display='none'">X</div>
       </div>
-      <div class="dep-head">Withdraw</div>
-      <div class="muted lh">Making a withdrawal is easy. Money goes directly to your registered mobile number. Just enter these details and then click WITHDRAW.</div>
-      <div class="card" style="margin-top:14px">
+      <div class="card">
         <div class="phone-card">
           <span class="badge mtn" id="wd-badge">M</span>
           <div><div class="muted small">Your mobile number</div><div class="bold" id="wd-phone"></div></div>
         </div>
-        <div class="muted">Amount</div>
         <div class="field"><span class="pre">UGX</span><input id="wd-amount" type="number" inputmode="numeric" placeholder="50000" oninput="Ascendin.Withdraw.updWFee()"></div>
         <div class="muted small">Min: 1,000, Max: 5,000,000</div>
         <div class="small" id="wd-fee"></div>
         <div class="small down" id="wd-err"></div>
         <button class="btn green dep-btn" id="wd-btn" onclick="Ascendin.Withdraw.startWithdraw()">WITHDRAW</button>
       </div>
+    </section>
+
+    <!-- WITHDRAW CRYPTO -->
+    <section class="view" id="view-withdraw-crypto">
+      <div class="topbar"><button class="iconbtn" onclick="Ascendin.go('withdraw')" id="wdc-back"></button><h1>Withdraw USDT</h1></div>
+      <div class="row2" style="margin-bottom:12px">
+        <button class="btn outline pay-tab" onclick="Ascendin.go('withdraw')">Mobile money</button>
+        <button class="btn outline pay-tab sel">Crypto USDT</button>
+      </div>
+      <div class="muted small lh">Request a USDT payout to your own wallet. Payouts are sent from the Ascendin Binance reserve, usually within 30 minutes.</div>
+      <div class="row2" style="margin:12px 0">
+        <button class="btn outline pay-tab sel" id="wdc-trc" onclick="Ascendin.Crypto.setChain('TRC20','wdc')">TRC20</button>
+        <button class="btn outline pay-tab" id="wdc-bep" onclick="Ascendin.Crypto.setChain('BEP20','wdc')">BEP20</button>
+      </div>
+      <div class="muted small">Your USDT address</div>
+      <div class="field"><input id="wdc-addr" placeholder="Paste your wallet address"></div>
+      <div class="muted small">Amount (UGX)</div>
+      <div class="field"><span class="pre">UGX</span><input id="wdc-amt" type="number" inputmode="numeric" placeholder="100000" oninput="Ascendin.Crypto.upd('wdc')"></div>
+      <div class="statline"><span class="muted">You receive</span><span class="bold" id="wdc-usdt">0.00 USDT</span></div>
+      <button class="btn blue" style="margin-top:10px" onclick="Ascendin.Crypto.submitWithdraw()">REQUEST WITHDRAWAL</button>
     </section>
 
     <!-- INVESTMENTS -->
@@ -241,6 +272,7 @@
       <div class="topbar"><button class="iconbtn" onclick="Ascendin.go('account')" id="st-back"></button><h1>Statement</h1></div>
       <div id="stmt-list"></div>
     </section>
+
     <!-- P2P HUB -->
     <section class="view" id="view-p2pHub">
       <div class="topbar"><button class="iconbtn" onclick="Ascendin.go('account')" id="p2p-back"></button><h1>P2P Trading</h1><button class="iconbtn" onclick="Ascendin.P2P.refresh()" id="p2p-refresh"></button></div>
@@ -291,55 +323,13 @@
         <button class="btn green" style="margin-top:12px" onclick="Ascendin.P2P.redeem()">CONFIRM AND PAY</button>
       </div>
     </section>
-        <!-- CRYPTO DEPOSIT -->
-    <section class="view" id="view-deposit-crypto">
-      <div class="topbar"><button class="iconbtn" onclick="Ascendin.go('deposit')" id="depc-back"></button><h1>Deposit USDT</h1></div>
-      <div class="row2" style="margin-bottom:12px">
-        <button class="btn outline pay-tab" onclick="Ascendin.go('deposit')">Mobile money</button>
-        <button class="btn outline pay-tab sel">Crypto USDT</button>
-      </div>
-      <div class="muted small lh">Send USDT from Binance or any wallet to the Ascendin reserve address. Your wallet credits after 1 network confirmation.</div>
-      <div class="row2" style="margin:12px 0">
-        <button class="btn outline pay-tab sel" id="depc-trc" onclick="Ascendin.Crypto.setChain('TRC20','depc')">TRC20</button>
-        <button class="btn outline pay-tab" id="depc-bep" onclick="Ascendin.Crypto.setChain('BEP20','depc')">BEP20</button>
-      </div>
-      <div class="card center">
-        <img id="depc-qr" width="140" height="140" alt="QR" style="border-radius:12px;background:#fff;padding:8px">
-        <div class="mono small" id="depc-addr" style="word-break:break-all;margin:10px 0;line-height:1.4"></div>
-        <button class="btn outline" onclick="Ascendin.Crypto.copyAddr('depc')">COPY ADDRESS</button>
-      </div>
-      <div class="muted small">Amount (UGX)</div>
-      <div class="field"><span class="pre">UGX</span><input id="depc-amt" type="number" inputmode="numeric" placeholder="100000" oninput="Ascendin.Crypto.upd('depc')"></div>
-      <div class="statline"><span class="muted">You send</span><span class="bold" id="depc-usdt">0.00 USDT</span></div>
-      <button class="btn blue" style="margin-top:10px" onclick="Ascendin.Crypto.submitDeposit()">I HAVE SENT USDT</button>
-    </section>
 
-    <!-- CRYPTO WITHDRAW -->
-    <section class="view" id="view-withdraw-crypto">
-      <div class="topbar"><button class="iconbtn" onclick="Ascendin.go('withdraw')" id="wdc-back"></button><h1>Withdraw USDT</h1></div>
-      <div class="row2" style="margin-bottom:12px">
-        <button class="btn outline pay-tab" onclick="Ascendin.go('withdraw')">Mobile money</button>
-        <button class="btn outline pay-tab sel">Crypto USDT</button>
-      </div>
-      <div class="muted small lh">Request a USDT payout to your own wallet. Payouts are sent from the Ascendin Binance reserve, usually within 30 minutes.</div>
-      <div class="row2" style="margin:12px 0">
-        <button class="btn outline pay-tab sel" id="wdc-trc" onclick="Ascendin.Crypto.setChain('TRC20','wdc')">TRC20</button>
-        <button class="btn outline pay-tab" id="wdc-bep" onclick="Ascendin.Crypto.setChain('BEP20','wdc')">BEP20</button>
-      </div>
-      <div class="muted small">Your USDT address</div>
-      <div class="field"><input id="wdc-addr" placeholder="Paste your wallet address"></div>
-      <div class="muted small">Amount (UGX)</div>
-      <div class="field"><span class="pre">UGX</span><input id="wdc-amt" type="number" inputmode="numeric" placeholder="100000" oninput="Ascendin.Crypto.upd('wdc')"></div>
-      <div class="statline"><span class="muted">You receive</span><span class="bold" id="wdc-usdt">0.00 USDT</span></div>
-      <button class="btn blue" style="margin-top:10px" onclick="Ascendin.Crypto.submitWithdraw()">REQUEST WITHDRAWAL</button>
-    </section>
     <nav id="bottom-nav">
       <button id="nav-home" onclick="Ascendin.go('home')"><span class="nic"></span>Home</button>
       <button id="nav-stocks" onclick="Ascendin.go('stocks')"><span class="nic"></span>Stocks</button>
       <button id="nav-bonds" onclick="Ascendin.go('bonds')"><span class="nic"></span>Bonds</button>
       <button id="nav-account" onclick="Ascendin.go('account')"><span class="nic"></span>Account</button>
     </nav>
-    <span class="nav-brand" id="nav-brand"></span>
   </div>
 
   <div class="overlay hidden" id="sheet-overlay" onclick="if(event.target===this)Ascendin.closeAll()"><div class="sheet" id="sheet-body"></div></div>
@@ -347,6 +337,7 @@
   <div class="toast hidden" id="toast"></div>
 
   <script src="js/data.js"></script>
+  <script src="js/data-extra.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/state.js"></script>
   <script src="js/home.js"></script>
@@ -355,10 +346,9 @@
   <script src="js/account.js"></script>
   <script src="js/deposit.js"></script>
   <script src="js/withdraw.js"></script>
-  <script src="js/sync.js"></script>
-  <script src="js/p2p.js"></script>
   <script src="js/crypto.js"></script>
-  <script src="js/data-extra.js"></script>
+  <script src="js/p2p.js"></script>
+  <script src="js/sync.js"></script>
   <script src="js/ui-extra.js"></script>
   <script src="js/app.js"></script>
 </body>
