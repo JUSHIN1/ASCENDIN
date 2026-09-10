@@ -23,6 +23,4 @@
    ['NVDA','Chipmakers extend global rally on AI demand','Semiconductor names led US indices as data-centre orders beat forecasts again.','1d ago'],
    ['Guide','Reading a stock chart in 60 seconds','Trend, volume and timeframes - the three things worth checking before you buy anything.','2d ago']
   ].forEach(function(n){ A.NEWS.push({tag:n[0],title:n[1],teaser:n[2],time:n[3]}); });
-  // about fallback
-  A.STOCKS.forEach(function(s){ if(!s.about){ s.about = s.name + ' trades in the ' + (s.region || 'global') + ' market and is available on Ascendin as a fractional share. Prices are live demo quotes.'; } });
 })();

@@ -351,5 +351,3 @@
 .news-auto:hover .news-track{animation-play-state:paused}
 @keyframes newsScroll{from{transform:translateY(0)}to{transform:translateY(-50%)}}
 #news-list .card{margin-bottom:12px}
-
-.tickertrack{animation-duration:140s}
