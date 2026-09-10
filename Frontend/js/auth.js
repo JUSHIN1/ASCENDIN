@@ -8,6 +8,7 @@
   function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
   var proceed=A.AuthSubmit;
   var mode=(localStorage.getItem('asc_cred_index')!==null)?'login':'signup';
+  if(!A.state){ A.state={phone:null,balance:0,holdings:{},bondHold:{},transactions:[],alerts:[],boosts:[]}; }
 
   var TC=[
    ['1. Definitions','"Ascendin", "the Platform", "we/us/our" refer to the Ascendin application and operator. "You/User" refers to any registered individual. "Account" means your Ascendin wallet and investment profile. "Mobile Money" means MTN Mobile Money and Airtel Money in Uganda.'],
@@ -130,6 +131,7 @@
         var saved=null; try{ saved=JSON.parse(localStorage.getItem('asc_cred_'+phone)||'null'); }catch(e){}
         if(!saved){ err.textContent='No account found for this number. Create one first.'; return; }
         if(hash(pw)!==saved.pw){ err.textContent='Incorrect password. Try again.'; return; }
+        if(!localStorage.getItem('ascendin-acct-'+phone)){ localStorage.setItem('ascendin-acct-'+phone, JSON.stringify({phone:phone,balance:0,holdings:{},bondHold:{},transactions:[],alerts:[],createdAt:Date.now()})); }
         handoff(phone);
       }
     }
