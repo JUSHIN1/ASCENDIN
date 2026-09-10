@@ -47,7 +47,7 @@
       var w = A.NEWS[n];
       nh += '<div class="card"><div style="display:flex; justify-content:space-between"><span class="pill">'+w.tag+'</span><span class="muted small">'+w.time+'</span></div><div style="font-weight:800; margin-top:8px; line-height:1.35">'+w.title+'</div><div class="muted small" style="margin-top:5px; line-height:1.45">'+w.teaser+'</div></div>';
     }
-    A.$('news-list').innerHTML = nh;
+    A.$('news-list').innerHTML = '<div class="news-track">' + nh + nh + '</div>'; var trk=A.$('news-list').firstChild; if(trk){ trk.style.animationDuration=(trk.querySelectorAll('.card').length*4)+'s'; }
         A.Stocks.renderHeatTicker();
     A.Home.loadNews();
   };
@@ -239,4 +239,14 @@
     }
     trySrc(0);
   };
+})();
+
+(function(){
+  function wrapNews(){
+    var nl=document.getElementById('news-list');
+    if(!nl || (nl.parentNode && nl.parentNode.classList && nl.parentNode.classList.contains('news-auto'))) return;
+    var w=document.createElement('div'); w.className='news-auto';
+    nl.parentNode.insertBefore(w,nl); w.appendChild(nl);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wrapNews); else wrapNews();
 })();
