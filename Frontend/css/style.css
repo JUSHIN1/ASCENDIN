@@ -353,3 +353,13 @@
 #news-list .card{margin-bottom:12px}
 
 .tickertrack{animation-duration:140s}
+
+/* bonds dimmed background + scrolling bonds tape */
+#bonds-bg video{opacity:.22}
+#bonds-bg .home-bg-fade{background:linear-gradient(180deg,rgba(11,14,20,.72) 0%,rgba(11,14,20,.86) 40%,var(--bg) 96%)}
+#view-bonds .bond-card{background:rgba(18,24,33,.82)}
+.bond-tapewrap{margin:0 0 12px}
+.bond-tapewrap .tickertrack{animation-duration:40s}
+.bt-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);margin-right:8px;cursor:pointer;flex:0 0 auto}
+.bt-name{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap}
+.bt-rate{font-size:12px;font-weight:800;color:var(--up)}
