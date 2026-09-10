@@ -1,10 +1,126 @@
 /* Stocks list, live moving chart, buy and sell flows. */
 (function(){
-  var A = window.Ascendin;
+  var A = window.Ascendin;  /* ===== GLOBAL LISTINGS - self-contained, no init needed ===== */
+  (function(){
+    var add = [
+      { id:'SAFCOM', name:'Safaricom PLC', sector:'Telecom', market:'AFR', L:'S', color:'#f97316', base:2500, cur:'UGX', price:2500, dayOpen:2500, chg:0, about:'Safaricom - telecom, Kenya.' },
+      { id:'COOP', name:'Co-op Bank Kenya', sector:'Banking', market:'AFR', L:'C', color:'#0ea5e9', base:900, cur:'UGX', price:900, dayOpen:900, chg:0, about:'Co-op Bank - banking, Kenya.' },
+      { id:'EABL', name:'East African Breweries', sector:'Consumer', market:'AFR', L:'E', color:'#16a34a', base:15000, cur:'UGX', price:15000, dayOpen:15000, chg:0, about:'EABL - consumer, Kenya.' },
+      { id:'KPLC', name:'Kenya Power', sector:'Utilities', market:'AFR', L:'K', color:'#dc2626', base:700, cur:'UGX', price:700, dayOpen:700, chg:0, about:'Kenya Power - utilities, Kenya.' },
+      { id:'BAMB', name:'Bamburi Cement', sector:'Industrial', market:'AFR', L:'B', color:'#7c3aed', base:4200, cur:'UGX', price:4200, dayOpen:4200, chg:0, about:'Bamburi - industrial, Kenya.' },
+      { id:'DANGCEM', name:'Dangote Cement', sector:'Industrial', market:'AFR', L:'D', color:'#0891b2', base:45000, cur:'UGX', price:45000, dayOpen:45000, chg:0, about:'Dangote - industrial, Nigeria.' },
+      { id:'GTCO', name:'GT Holdings', sector:'Banking', market:'AFR', L:'G', color:'#f97316', base:3800, cur:'UGX', price:3800, dayOpen:3800, chg:0, about:'GT Holdings - banking, Nigeria.' },
+      { id:'ZENITH', name:'Zenith Bank', sector:'Banking', market:'AFR', L:'Z', color:'#0ea5e9', base:2600, cur:'UGX', price:2600, dayOpen:2600, chg:0, about:'Zenith - banking, Nigeria.' },
+      { id:'MTNN', name:'MTN Nigeria', sector:'Telecom', market:'AFR', L:'M', color:'#16a34a', base:21000, cur:'UGX', price:21000, dayOpen:21000, chg:0, about:'MTN Nigeria - telecom, Nigeria.' },
+      { id:'SEPLAT', name:'Seplat Energy', sector:'Energy', market:'AFR', L:'S', color:'#dc2626', base:19000, cur:'UGX', price:19000, dayOpen:19000, chg:0, about:'Seplat - energy, Nigeria.' },
+      { id:'ACCESS', name:'Access Holdings', sector:'Banking', market:'AFR', L:'A', color:'#7c3aed', base:1200, cur:'UGX', price:1200, dayOpen:1200, chg:0, about:'Access - banking, Nigeria.' },
+      { id:'NNF', name:'Nestle Nigeria', sector:'Consumer', market:'AFR', L:'N', color:'#0891b2', base:25000, cur:'UGX', price:25000, dayOpen:25000, chg:0, about:'Nestle Nigeria - consumer, Nigeria.' },
+      { id:'NPN', name:'Naspers', sector:'Internet', market:'AFR', L:'N', color:'#f97316', base:320000, cur:'UGX', price:320000, dayOpen:320000, chg:0, about:'Naspers - internet, South Africa.' },
+      { id:'AGL', name:'Anglo American', sector:'Mining', market:'AFR', L:'A', color:'#0ea5e9', base:28000, cur:'UGX', price:28000, dayOpen:28000, chg:0, about:'Anglo American - mining, South Africa.' },
+      { id:'SHP', name:'Shoprite', sector:'Retail', market:'AFR', L:'S', color:'#16a34a', base:17000, cur:'UGX', price:17000, dayOpen:17000, chg:0, about:'Shoprite - retail, South Africa.' },
+      { id:'FSR', name:'FirstRand', sector:'Banking', market:'AFR', L:'F', color:'#dc2626', base:5200, cur:'UGX', price:5200, dayOpen:5200, chg:0, about:'FirstRand - banking, South Africa.' },
+      { id:'SOL', name:'Sasol', sector:'Chemicals', market:'AFR', L:'S', color:'#7c3aed', base:14000, cur:'UGX', price:14000, dayOpen:14000, chg:0, about:'Sasol - chemicals, South Africa.' },
+      { id:'REM', name:'Remgro', sector:'Holdings', market:'AFR', L:'R', color:'#0891b2', base:9000, cur:'UGX', price:9000, dayOpen:9000, chg:0, about:'Remgro - holdings, South Africa.' },
+      { id:'IMP', name:'Impala Platinum', sector:'Mining', market:'AFR', L:'I', color:'#f97316', base:11000, cur:'UGX', price:11000, dayOpen:11000, chg:0, about:'Impala - mining, South Africa.' },
+      { id:'NED', name:'Nedbank Group', sector:'Banking', market:'AFR', L:'N', color:'#0ea5e9', base:16000, cur:'UGX', price:16000, dayOpen:16000, chg:0, about:'Nedbank - banking, South Africa.' },
+      { id:'COMI', name:'Commercial Intl Bank', sector:'Banking', market:'AFR', L:'C', color:'#16a34a', base:1900, cur:'UGX', price:1900, dayOpen:1900, chg:0, about:'CIB - banking, Egypt.' },
+      { id:'TMG', name:'Talaat Moustafa Group', sector:'Real Estate', market:'AFR', L:'T', color:'#dc2626', base:1500, cur:'UGX', price:1500, dayOpen:1500, chg:0, about:'TMG - real estate, Egypt.' },
+      { id:'EAST', name:'Eastern Co', sector:'Consumer', market:'AFR', L:'E', color:'#7c3aed', base:1700, cur:'UGX', price:1700, dayOpen:1700, chg:0, about:'Eastern Co - consumer, Egypt.' },
+      { id:'GCB', name:'GCB Bank', sector:'Banking', market:'AFR', L:'G', color:'#0891b2', base:4200, cur:'UGX', price:4200, dayOpen:4200, chg:0, about:'GCB - banking, Ghana.' },
+      { id:'CRDB', name:'CRDB Bank', sector:'Banking', market:'AFR', L:'C', color:'#f97316', base:2100, cur:'UGX', price:2100, dayOpen:2100, chg:0, about:'CRDB - banking, Tanzania.' },
+      { id:'VDT', name:'Vodacom Tanzania', sector:'Telecom', market:'AFR', L:'V', color:'#0ea5e9', base:1300, cur:'UGX', price:1300, dayOpen:1300, chg:0, about:'Vodacom - telecom, Tanzania.' },
+      { id:'BKR', name:'Bank of Kigali', sector:'Banking', market:'AFR', L:'B', color:'#16a34a', base:900, cur:'UGX', price:900, dayOpen:900, chg:0, about:'Bank of Kigali - banking, Rwanda.' },
+      { id:'FNBB', name:'FNB Botswana', sector:'Banking', market:'AFR', L:'F', color:'#dc2626', base:3000, cur:'UGX', price:3000, dayOpen:3000, chg:0, about:'FNB - banking, Botswana.' },
+      { id:'MCB', name:'MCB Group', sector:'Banking', market:'AFR', L:'M', color:'#7c3aed', base:8000, cur:'UGX', price:8000, dayOpen:8000, chg:0, about:'MCB - banking, Mauritius.' },
+      { id:'ATW', name:'Attijariwafa Bank', sector:'Banking', market:'AFR', L:'A', color:'#0891b2', base:42000, cur:'UGX', price:42000, dayOpen:42000, chg:0, about:'Attijariwafa - banking, Morocco.' },
+      { id:'IAM', name:'Maroc Telecom', sector:'Telecom', market:'AFR', L:'I', color:'#f97316', base:10000, cur:'UGX', price:10000, dayOpen:10000, chg:0, about:'Maroc Telecom - telecom, Morocco.' },
+      { id:'JPM', name:'JPMorgan Chase', sector:'Banking', market:'WRD', L:'J', color:'#16a34a', base:245, cur:'USD', price:245, dayOpen:245, chg:0, about:'JPMorgan - banking, USA.' },
+      { id:'V', name:'Visa', sector:'Payments', market:'WRD', L:'V', color:'#dc2626', base:310, cur:'USD', price:310, dayOpen:310, chg:0, about:'Visa - payments, USA.' },
+      { id:'MA', name:'Mastercard', sector:'Payments', market:'WRD', L:'M', color:'#7c3aed', base:520, cur:'USD', price:520, dayOpen:520, chg:0, about:'Mastercard - payments, USA.' },
+      { id:'JNJ', name:'Johnson and Johnson', sector:'Health', market:'WRD', L:'J', color:'#0891b2', base:155, cur:'USD', price:155, dayOpen:155, chg:0, about:'JNJ - health, USA.' },
+      { id:'WMT', name:'Walmart', sector:'Retail', market:'WRD', L:'W', color:'#f97316', base:95, cur:'USD', price:95, dayOpen:95, chg:0, about:'Walmart - retail, USA.' },
+      { id:'PG', name:'Procter and Gamble', sector:'Consumer', market:'WRD', L:'P', color:'#0ea5e9', base:170, cur:'USD', price:170, dayOpen:170, chg:0, about:'P&G - consumer, USA.' },
+      { id:'DIS', name:'Disney', sector:'Media', market:'WRD', L:'D', color:'#16a34a', base:112, cur:'USD', price:112, dayOpen:112, chg:0, about:'Disney - media, USA.' },
+      { id:'NFLX', name:'Netflix', sector:'Media', market:'WRD', L:'N', color:'#dc2626', base:905, cur:'USD', price:905, dayOpen:905, chg:0, about:'Netflix - media, USA.' },
+      { id:'AMD', name:'AMD', sector:'Semiconductors', market:'WRD', L:'A', color:'#7c3aed', base:122, cur:'USD', price:122, dayOpen:122, chg:0, about:'AMD - semiconductors, USA.' },
+      { id:'INTC', name:'Intel', sector:'Semiconductors', market:'WRD', L:'I', color:'#0891b2', base:21, cur:'USD', price:21, dayOpen:21, chg:0, about:'Intel - semiconductors, USA.' },
+      { id:'ORCL', name:'Oracle', sector:'Software', market:'WRD', L:'O', color:'#f97316', base:185, cur:'USD', price:185, dayOpen:185, chg:0, about:'Oracle - software, USA.' },
+      { id:'CRM', name:'Salesforce', sector:'Software', market:'WRD', L:'C', color:'#0ea5e9', base:275, cur:'USD', price:275, dayOpen:275, chg:0, about:'Salesforce - software, USA.' },
+      { id:'ADBE', name:'Adobe', sector:'Software', market:'WRD', L:'A', color:'#16a34a', base:340, cur:'USD', price:340, dayOpen:340, chg:0, about:'Adobe - software, USA.' },
+      { id:'UBER', name:'Uber', sector:'Mobility', market:'WRD', L:'U', color:'#dc2626', base:78, cur:'USD', price:78, dayOpen:78, chg:0, about:'Uber - mobility, USA.' },
+      { id:'ABNB', name:'Airbnb', sector:'Travel', market:'WRD', L:'A', color:'#7c3aed', base:132, cur:'USD', price:132, dayOpen:132, chg:0, about:'Airbnb - travel, USA.' },
+      { id:'PYPL', name:'PayPal', sector:'Payments', market:'WRD', L:'P', color:'#0891b2', base:85, cur:'USD', price:85, dayOpen:85, chg:0, about:'PayPal - payments, USA.' },
+      { id:'PLTR', name:'Palantir', sector:'Software', market:'WRD', L:'P', color:'#f97316', base:68, cur:'USD', price:68, dayOpen:68, chg:0, about:'Palantir - software, USA.' },
+      { id:'SOFI', name:'SoFi', sector:'Finance', market:'WRD', L:'S', color:'#0ea5e9', base:14, cur:'USD', price:14, dayOpen:14, chg:0, about:'SoFi - finance, USA.' },
+      { id:'BA', name:'Boeing', sector:'Industrial', market:'WRD', L:'B', color:'#16a34a', base:178, cur:'USD', price:178, dayOpen:178, chg:0, about:'Boeing - industrial, USA.' },
+      { id:'KO', name:'Coca-Cola', sector:'Consumer', market:'WRD', L:'C', color:'#dc2626', base:63, cur:'USD', price:63, dayOpen:63, chg:0, about:'Coca-Cola - consumer, USA.' },
+      { id:'HSBA', name:'HSBC Holdings', sector:'Banking', market:'WRD', L:'H', color:'#7c3aed', base:12, cur:'USD', price:12, dayOpen:12, chg:0, about:'HSBC - banking, UK.' },
+      { id:'BP', name:'BP', sector:'Energy', market:'WRD', L:'B', color:'#0891b2', base:5.8, cur:'USD', price:5.8, dayOpen:5.8, chg:0, about:'BP - energy, UK.' },
+      { id:'SHEL', name:'Shell', sector:'Energy', market:'WRD', L:'S', color:'#f97316', base:34, cur:'USD', price:34, dayOpen:34, chg:0, about:'Shell - energy, UK.' },
+      { id:'AZN', name:'AstraZeneca', sector:'Health', market:'WRD', L:'A', color:'#0ea5e9', base:68, cur:'USD', price:68, dayOpen:68, chg:0, about:'AstraZeneca - health, UK.' },
+      { id:'ULVR', name:'Unilever', sector:'Consumer', market:'WRD', L:'U', color:'#16a34a', base:47, cur:'USD', price:47, dayOpen:47, chg:0, about:'Unilever - consumer, UK.' },
+      { id:'SAP', name:'SAP', sector:'Software', market:'WRD', L:'S', color:'#dc2626', base:285, cur:'USD', price:285, dayOpen:285, chg:0, about:'SAP - software, Germany.' },
+      { id:'SIE', name:'Siemens', sector:'Industrial', market:'WRD', L:'S', color:'#7c3aed', base:210, cur:'USD', price:210, dayOpen:210, chg:0, about:'Siemens - industrial, Germany.' },
+      { id:'VOW3', name:'Volkswagen', sector:'Autos', market:'WRD', L:'V', color:'#0891b2', base:92, cur:'USD', price:92, dayOpen:92, chg:0, about:'Volkswagen - autos, Germany.' },
+      { id:'BMW', name:'BMW', sector:'Autos', market:'WRD', L:'B', color:'#f97316', base:78, cur:'USD', price:78, dayOpen:78, chg:0, about:'BMW - autos, Germany.' },
+      { id:'DAI', name:'Daimler Truck', sector:'Autos', market:'WRD', L:'D', color:'#0ea5e9', base:165, cur:'USD', price:165, dayOpen:165, chg:0, about:'Daimler - autos, Germany.' },
+      { id:'MC', name:'LVMH', sector:'Luxury', market:'WRD', L:'L', color:'#16a34a', base:480, cur:'USD', price:480, dayOpen:480, chg:0, about:'LVMH - luxury, France.' },
+      { id:'OR', name:'Loreal', sector:'Luxury', market:'WRD', L:'L', color:'#dc2626', base:385, cur:'USD', price:385, dayOpen:385, chg:0, about:'Loreal - luxury, France.' },
+      { id:'BNP', name:'BNP Paribas', sector:'Banking', market:'WRD', L:'B', color:'#7c3aed', base:62, cur:'USD', price:62, dayOpen:62, chg:0, about:'BNP - banking, France.' },
+      { id:'SAN', name:'Santander', sector:'Banking', market:'WRD', L:'S', color:'#0891b2', base:4.8, cur:'USD', price:4.8, dayOpen:4.8, chg:0, about:'Santander - banking, Spain.' },
+      { id:'IBE', name:'Iberdrola', sector:'Utilities', market:'WRD', L:'I', color:'#f97316', base:12, cur:'USD', price:12, dayOpen:12, chg:0, about:'Iberdrola - utilities, Spain.' },
+      { id:'NESN', name:'Nestle', sector:'Consumer', market:'WRD', L:'N', color:'#0ea5e9', base:88, cur:'USD', price:88, dayOpen:88, chg:0, about:'Nestle - consumer, Switzerland.' },
+      { id:'ROG', name:'Roche', sector:'Health', market:'WRD', L:'R', color:'#16a34a', base:245, cur:'USD', price:245, dayOpen:245, chg:0, about:'Roche - health, Switzerland.' },
+      { id:'UBS', name:'UBS', sector:'Banking', market:'WRD', L:'U', color:'#dc2626', base:32, cur:'USD', price:32, dayOpen:32, chg:0, about:'UBS - banking, Switzerland.' },
+      { id:'ASML', name:'ASML', sector:'Semiconductors', market:'WRD', L:'A', color:'#7c3aed', base:1050, cur:'USD', price:1050, dayOpen:1050, chg:0, about:'ASML - semiconductors, Netherlands.' },
+      { id:'PHL', name:'Philips', sector:'Health', market:'WRD', L:'P', color:'#0891b2', base:320, cur:'USD', price:320, dayOpen:320, chg:0, about:'Philips - health, Netherlands.' },
+      { id:'NOVO-B', name:'Novo Nordisk', sector:'Health', market:'WRD', L:'N', color:'#f97316', base:145, cur:'USD', price:145, dayOpen:145, chg:0, about:'Novo Nordisk - health, Denmark.' },
+      { id:'7203', name:'Toyota Motor', sector:'Autos', market:'WRD', L:'T', color:'#0ea5e9', base:28, cur:'USD', price:28, dayOpen:28, chg:0, about:'Toyota - autos, Japan.' },
+      { id:'6758', name:'Sony Group', sector:'Tech', market:'WRD', L:'S', color:'#16a34a', base:92, cur:'USD', price:92, dayOpen:92, chg:0, about:'Sony - tech, Japan.' },
+      { id:'9984', name:'SoftBank Group', sector:'Tech', market:'WRD', L:'S', color:'#dc2626', base:78, cur:'USD', price:78, dayOpen:78, chg:0, about:'SoftBank - tech, Japan.' },
+      { id:'8306', name:'MUFG', sector:'Banking', market:'WRD', L:'M', color:'#7c3aed', base:12, cur:'USD', price:12, dayOpen:12, chg:0, about:'MUFG - banking, Japan.' },
+      { id:'6861', name:'Keyence', sector:'Industrial', market:'WRD', L:'K', color:'#0891b2', base:480, cur:'USD', price:480, dayOpen:480, chg:0, about:'Keyence - industrial, Japan.' },
+      { id:'0700', name:'Tencent', sector:'Internet', market:'WRD', L:'T', color:'#f97316', base:52, cur:'USD', price:52, dayOpen:52, chg:0, about:'Tencent - internet, China.' },
+      { id:'9988', name:'Alibaba', sector:'Internet', market:'WRD', L:'A', color:'#0ea5e9', base:118, cur:'USD', price:118, dayOpen:118, chg:0, about:'Alibaba - internet, China.' },
+      { id:'3690', name:'Meituan', sector:'Internet', market:'WRD', L:'M', color:'#16a34a', base:18, cur:'USD', price:18, dayOpen:18, chg:0, about:'Meituan - internet, China.' },
+      { id:'1810', name:'Xiaomi', sector:'Tech', market:'WRD', L:'X', color:'#dc2626', base:4.2, cur:'USD', price:4.2, dayOpen:4.2, chg:0, about:'Xiaomi - tech, China.' },
+      { id:'RELIANCE', name:'Reliance Industries', sector:'Energy', market:'WRD', L:'R', color:'#7c3aed', base:34, cur:'USD', price:34, dayOpen:34, chg:0, about:'Reliance - energy, India.' },
+      { id:'TCS', name:'TCS', sector:'Software', market:'WRD', L:'T', color:'#0891b2', base:41, cur:'USD', price:41, dayOpen:41, chg:0, about:'TCS - software, India.' },
+      { id:'HDFCBANK', name:'HDFC Bank', sector:'Banking', market:'WRD', L:'H', color:'#f97316', base:19, cur:'USD', price:19, dayOpen:19, chg:0, about:'HDFC - banking, India.' },
+      { id:'INFY', name:'Infosys', sector:'Software', market:'WRD', L:'I', color:'#0ea5e9', base:18, cur:'USD', price:18, dayOpen:18, chg:0, about:'Infosys - software, India.' },
+      { id:'005930', name:'Samsung Electronics', sector:'Tech', market:'WRD', L:'S', color:'#16a34a', base:58, cur:'USD', price:58, dayOpen:58, chg:0, about:'Samsung - tech, South Korea.' },
+      { id:'000660', name:'SK Hynix', sector:'Semiconductors', market:'WRD', L:'S', color:'#dc2626', base:130, cur:'USD', price:130, dayOpen:130, chg:0, about:'SK Hynix - semiconductors, South Korea.' },
+      { id:'D01', name:'DBS Group', sector:'Banking', market:'WRD', L:'D', color:'#7c3aed', base:32, cur:'USD', price:32, dayOpen:32, chg:0, about:'DBS - banking, Singapore.' },
+      { id:'O39', name:'OCBC', sector:'Banking', market:'WRD', L:'O', color:'#0891b2', base:11, cur:'USD', price:11, dayOpen:11, chg:0, about:'OCBC - banking, Singapore.' },
+      { id:'PTT', name:'PTT PCL', sector:'Energy', market:'WRD', L:'P', color:'#f97316', base:0.85, cur:'USD', price:0.85, dayOpen:0.85, chg:0, about:'PTT - energy, Thailand.' },
+      { id:'BBCA', name:'Bank Central Asia', sector:'Banking', market:'WRD', L:'B', color:'#0ea5e9', base:0.58, cur:'USD', price:0.58, dayOpen:0.58, chg:0, about:'BCA - banking, Indonesia.' },
+      { id:'1155', name:'Maybank', sector:'Banking', market:'WRD', L:'M', color:'#16a34a', base:2.1, cur:'USD', price:2.1, dayOpen:2.1, chg:0, about:'Maybank - banking, Malaysia.' },
+      { id:'VCB', name:'Vietcombank', sector:'Banking', market:'WRD', L:'V', color:'#dc2626', base:3.4, cur:'USD', price:3.4, dayOpen:3.4, chg:0, about:'Vietcombank - banking, Vietnam.' },
+      { id:'2222', name:'Saudi Aramco', sector:'Energy', market:'WRD', L:'S', color:'#7c3aed', base:7.9, cur:'USD', price:7.9, dayOpen:7.9, chg:0, about:'Aramco - energy, Saudi Arabia.' },
+      { id:'1120', name:'Al Rajhi Bank', sector:'Banking', market:'WRD', L:'A', color:'#0891b2', base:26, cur:'USD', price:26, dayOpen:26, chg:0, about:'Al Rajhi - banking, Saudi Arabia.' },
+      { id:'EMAAR', name:'Emaar Properties', sector:'Real Estate', market:'WRD', L:'E', color:'#f97316', base:2.0, cur:'USD', price:2.0, dayOpen:2.0, chg:0, about:'Emaar - real estate, UAE.' },
+      { id:'QNB', name:'Qatar National Bank', sector:'Banking', market:'WRD', L:'Q', color:'#0ea5e9', base:5.4, cur:'USD', price:5.4, dayOpen:5.4, chg:0, about:'QNB - banking, Qatar.' },
+      { id:'SHOP', name:'Shopify', sector:'Tech', market:'WRD', L:'S', color:'#16a34a', base:95, cur:'USD', price:95, dayOpen:95, chg:0, about:'Shopify - tech, Canada.' },
+      { id:'RY', name:'Royal Bank of Canada', sector:'Banking', market:'WRD', L:'R', color:'#dc2626', base:118, cur:'USD', price:118, dayOpen:118, chg:0, about:'RBC - banking, Canada.' },
+      { id:'CNQ', name:'Canadian Natural Res', sector:'Energy', market:'WRD', L:'C', color:'#7c3aed', base:62, cur:'USD', price:62, dayOpen:62, chg:0, about:'CNQ - energy, Canada.' },
+      { id:'VALE', name:'Vale', sector:'Mining', market:'WRD', L:'V', color:'#0891b2', base:12, cur:'USD', price:12, dayOpen:12, chg:0, about:'Vale - mining, Brazil.' },
+      { id:'PETR', name:'Petrobras', sector:'Energy', market:'WRD', L:'P', color:'#f97316', base:3.6, cur:'USD', price:3.6, dayOpen:3.6, chg:0, about:'Petrobras - energy, Brazil.' },
+      { id:'ITUB', name:'Itau Unibanco', sector:'Banking', market:'WRD', L:'I', color:'#0ea5e9', base:5.8, cur:'USD', price:5.8, dayOpen:5.8, chg:0, about:'Itau - banking, Brazil.' },
+      { id:'AMX', name:'America Movil', sector:'Telecom', market:'WRD', L:'A', color:'#16a34a', base:8.9, cur:'USD', price:8.9, dayOpen:8.9, chg:0, about:'America Movil - telecom, Mexico.' },
+      { id:'WALMEX', name:'Walmex', sector:'Retail', market:'WRD', L:'W', color:'#dc2626', base:3.2, cur:'USD', price:3.2, dayOpen:3.2, chg:0, about:'Walmex - retail, Mexico.' },
+      { id:'BHP', name:'BHP Group', sector:'Mining', market:'WRD', L:'B', color:'#7c3aed', base:42, cur:'USD', price:42, dayOpen:42, chg:0, about:'BHP - mining, Australia.' },
+      { id:'CBA', name:'Commonwealth Bank', sector:'Banking', market:'WRD', L:'C', color:'#0891b2', base:105, cur:'USD', price:105, dayOpen:105, chg:0, about:'CommBank - banking, Australia.' },
+      { id:'CSL', name:'CSL', sector:'Health', market:'WRD', L:'C', color:'#f97316', base:62, cur:'USD', price:62, dayOpen:62, chg:0, about:'CSL - health, Australia.' },
+      { id:'WES', name:'Wesfarmers', sector:'Retail', market:'WRD', L:'W', color:'#0ea5e9', base:48, cur:'USD', price:48, dayOpen:48, chg:0, about:'Wesfarmers - retail, Australia.' }
+    ];
+    var have = {};
+    A.STOCKS.forEach(function(x){ have[x.id] = true; });
+    add.forEach(function(s){ if (!have[s.id]) A.STOCKS.push(s); });
+  })();
   A.Stocks = { curStock:null, curTF:'1D', stockTab:'All', seriesData:{}, liveTimer:null };
 
   A.Stocks.renderStockTabs = function(){
-    var tabs = ['All','USE','New','US','ETFs'];
+    var tabs = ['All','USE','Africa','New','US','World','ETFs'];
     var h = '';
     for (var i=0;i<tabs.length;i++){
       var active = A.Stocks.stockTab===tabs[i] ? ' active' : '';
@@ -24,6 +140,8 @@
       if (A.Stocks.stockTab==='New' && s.market!=='NEW') continue;
       if (A.Stocks.stockTab==='US' && s.market!=='US') continue;
       if (A.Stocks.stockTab==='ETFs' && s.market!=='ETF') continue;
+      if (A.Stocks.stockTab==='Africa' && s.market!=='AFR' && s.market!=='USE') continue;
+      if (A.Stocks.stockTab==='World' && s.market!=='WRD') continue;
       if (q && s.name.toLowerCase().indexOf(q)<0 && s.id.toLowerCase().indexOf(q)<0) continue;
       h += '<div class="asset" onclick="Ascendin.Stocks.openStock(\''+s.id+'\')">'+
         '<div class="logo" style="background:'+s.color+'; color:'+(s.tc||'#fff')+'">'+A.logoHTML(s)+'</div>'+
