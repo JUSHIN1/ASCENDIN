@@ -30,12 +30,7 @@
     {id:'COIN', name:'Coinbase', sector:'Crypto, US', market:'US', cur:'USD', price:177.08, chg:-5.15, color:'#0052FF', L:'C', about:'Coinbase Global operates one of the largest cryptocurrency exchange platforms.'},
     {id:'SPY', name:'S&P 500 ETF', sector:'Index fund', market:'ETF', cur:'USD', price:543.20, chg:-0.62, color:'#B0272E', L:'SP', about:'Tracks the 500 largest US companies. One purchase gives you instant diversification across the whole US market.'},
     {id:'QQQ', name:'Nasdaq 100 ETF', sector:'Index fund', market:'ETF', cur:'USD', price:468.90, chg:-0.80, color:'#00A5E3', L:'Q', about:'Tracks the 100 largest non-financial companies on Nasdaq, heavy in technology.'}
-  
-    { id:'SAFCOM', name:'Safaricom PLC', sector:'Telecom', market:'AFR', L:'S', color:'#f97316', base:2500, cur:'UGX', about:'Safaricom is a Kenyan telecom company, tradable on Ascendin as a fractional share.' },
-    { id:'DANGCEM', name:'Dangote Cement', sector:'Industrial', market:'AFR', L:'D', color:'#0891b6', base:45000, cur:'UGX', about:'Dangote Cement is a Nigerian industrial company, tradable on Ascendin as a fractional share.' },
-    { id:'JPM', name:'JPMorgan Chase', sector:'Banking', market:'WRD', L:'J', color:'#16a34a', base:245, cur:'USD', about:'JPMorgan Chase is a US banking company, tradable on Ascendin as a fractional share.' },
-    { id:'V', name:'Visa', sector:'Payments', market:'WRD', L:'V', color:'#dc2626', base:310, cur:'USD', about:'Visa is a US payments company, tradable on Ascendin as a fractional share.' },
-    { id:'MA', name:'Mastercard', sector:'Payments', market:'WRD', L:'M', color:'#7c3aed', base:520, cur:'USD', about:'Mastercard is a US payments company, tradable on Ascendin as a fractional share.' },];
+  ];
 
   Ascendin.BONDS = [
     {id:'gob-2y', name:'Uganda 2-Year Treasury Bond', issuer:'Government of Uganda', type:'Government Bond', rate:16.0, months:24, min:50000, risk:'Low', about:'A 2-year bond issued by the Government of Uganda through Bank of Uganda auctions. Government bonds are generally considered the lowest-risk fixed income option since they are backed by the state.'},
