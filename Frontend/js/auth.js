@@ -93,8 +93,9 @@
     try{ proceed(); }catch(e){ console.error('proceed:',e); }
     setTimeout(function(){
       var home=$('view-home');
-      var ok = A.state && A.state.phone===phone && home && home.classList.contains('active');
-      if(!ok){ location.reload(); }
+      if(A.state && A.state.phone){ try{ localStorage.setItem('ascendin-session', A.state.phone); }catch(e){} }
+      if(home && home.classList.contains('active')){ return; }
+      location.reload();
     }, 500);
   }
 
