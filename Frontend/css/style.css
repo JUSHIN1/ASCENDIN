@@ -363,3 +363,9 @@
 .bt-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);margin-right:8px;cursor:pointer;flex:0 0 auto}
 .bt-name{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap}
 .bt-rate{font-size:12px;font-weight:800;color:var(--up)}
+
+/* T&C document + auth polish */
+.tc-sec{margin-bottom:12px}
+.tc-sec h4{font-size:13px;font-weight:800;margin-bottom:4px;color:var(--text)}
+.tc-sec p{font-size:12.5px;line-height:1.6;color:var(--muted)}
+#view-auth .auth-card{text-align:left}
