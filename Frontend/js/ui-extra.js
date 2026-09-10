@@ -142,16 +142,40 @@
     A.openSheet('<div style="text-align:left"><div style="font-size:18px;font-weight:800;margin-bottom:8px">Terms & Conditions</div><div style="max-height:62vh;overflow:auto;padding-right:4px" id="tc-body">'+tcHTML()+'</div><button class="btn outline" style="margin-top:12px" onclick="Ascendin.closeAll()">CLOSE</button></div>');
   };
 
-  /* --- organized auth: signup (number+email+password) / login (number+password) --- */
+  /* --- organized auth: separate professional Login & Create-Account screens --- */
+(function(){
+  var A=window.Ascendin;
   function hash(s){var h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))|0;}return 'h'+(h>>>0);}
   function strong(pw){ return pw.length>=8 && /[A-Z]/.test(pw) && /[a-z]/.test(pw) && /[0-9]/.test(pw) && /[^A-Za-z0-9]/.test(pw); }
   function ageOf(dob){ var d=new Date(dob); if(isNaN(d))return -1; var t=new Date(); var a=t.getFullYear()-d.getFullYear(); var m=t.getMonth()-d.getMonth(); if(m<0||(m===0&&t.getDate()<d.getDate()))a--; return a; }
   function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
-  var proceed = A.AuthSubmit;   /* original state.js login/create by phone */
-  var mode='signup';
+  var proceed=A.AuthSubmit;
+  var mode='login';
 
-  function signupFields(){
-    return '<div class="muted small">Mobile number (MTN / Airtel)</div>'+
+  function brand(){ return '<div class="auth-brandrow"><div class="auth-brandmark">A</div><div><div class="auth-brand">ASCENDIN</div><div class="auth-brandtag">INVEST TODAY. GROW TOMORROW.</div></div></div>'; }
+  function trust(){ return '<div class="auth-trust"><span>Encrypted credentials</span><span>18+ only</span><span>Mobile-money linked</span></div>'; }
+  function foot(){ return '<div class="auth-foot">By continuing you agree to our <span class="link" id="au-tc-open">Terms & Conditions</span> and confirm you are 18 years or older.</div>'; }
+
+  function loginScreen(){
+    return '<div class="auth-screen">'+brand()+
+      '<div class="auth-head">Welcome back</div>'+
+      '<div class="auth-sub">Log in with your mobile number and password to reach your wallet, stocks and bonds.</div>'+
+      '<div class="muted small">Mobile number</div>'+
+      '<div class="field"><span class="pre">+256</span><input id="au-phone" type="tel" inputmode="numeric" placeholder="7XXXXXXXX"></div>'+
+      '<div class="muted small" style="margin-top:8px">Password</div>'+
+      '<div class="field"><input id="au-pw" type="password" placeholder="Your password"></div>'+
+      '<input type="hidden" id="auth-phone" value="">'+
+      '<div class="small down" id="auth-err2" style="min-height:16px"></div>'+
+      '<button class="btn green auth-cta" id="auth-go">LOG IN</button>'+
+      '<div class="auth-divider"><span>new to ascendin?</span></div>'+
+      '<button class="btn outline auth-cta" id="auth-switch">CREATE AN ACCOUNT</button>'+
+      trust()+foot()+'</div>';
+  }
+  function signupScreen(){
+    return '<div class="auth-screen">'+brand()+
+      '<div class="auth-head">Create your account</div>'+
+      '<div class="auth-sub">Join Ascendin with your mobile number, email and a strong password. You will go straight to your dashboard.</div>'+
+      '<div class="muted small">Mobile number (MTN / Airtel)</div>'+
       '<div class="field"><span class="pre">+256</span><input id="au-phone" type="tel" inputmode="numeric" placeholder="7XXXXXXXX"></div>'+
       '<div class="muted small" style="margin-top:8px">Email address</div>'+
       '<div class="field"><input id="au-email" type="email" placeholder="you@example.com"></div>'+
@@ -160,38 +184,24 @@
       '<div class="field" style="margin-top:8px"><input id="au-pw2" type="password" placeholder="Confirm password"></div>'+
       '<div class="muted small" style="margin-top:8px">Date of birth (18+ only)</div>'+
       '<div class="field"><input id="au-dob" type="date"></div>'+
-      '<label style="display:flex;gap:8px;align-items:flex-start;margin:12px 0;font-size:12.5px;text-align:left"><input type="checkbox" id="au-tc" style="margin-top:2px"><span>I am 18+ and I have read and agree to the <span class="link" id="au-tc-open">Terms & Conditions</span></span></label>';
-  }
-  function loginFields(){
-    return '<div class="muted small">Mobile number</div>'+
-      '<div class="field"><span class="pre">+256</span><input id="au-phone" type="tel" inputmode="numeric" placeholder="7XXXXXXXX"></div>'+
-      '<div class="muted small" style="margin-top:8px">Password</div>'+
-      '<div class="field"><input id="au-pw" type="password" placeholder="Your password"></div>';
-  }
-  function authHTML(){
-    return '<div class="auth-card" style="text-align:left">'+
-      '<div class="center" style="margin-bottom:6px"><div style="font-family:\'Space Grotesk\',sans-serif;font-weight:700;font-size:26px;letter-spacing:2px">ASCENDIN</div><div class="muted small">INVEST TODAY. GROW TOMORROW.</div></div>'+
-      '<div class="row2" style="margin:12px 0">'+
-        '<button class="btn outline pay-tab '+(mode==='signup'?'sel':'')+'" id="auth-tab-signup">Create account</button>'+
-        '<button class="btn outline pay-tab '+(mode==='login'?'sel':'')+'" id="auth-tab-login">Log in</button>'+
-      '</div>'+
-      (mode==='signup'?signupFields():loginFields())+
+      '<label style="display:flex;gap:8px;align-items:flex-start;margin:12px 0;font-size:12.5px;text-align:left"><input type="checkbox" id="au-tc" style="margin-top:2px"><span>I am 18+ and I have read and agree to the <span class="link" id="au-tc-open2">Terms & Conditions</span></span></label>'+
       '<input type="hidden" id="auth-phone" value="">'+
       '<div class="small down" id="auth-err2" style="min-height:16px"></div>'+
-      '<button class="btn green" style="margin-top:10px" id="auth-go">'+(mode==='signup'?'CREATE ACCOUNT':'LOG IN')+'</button>'+
-      '<div class="muted small center" style="margin-top:12px">'+(mode==='signup'?'Already have an account? <span class="link" id="auth-switch">Log in</span>':'New to Ascendin? <span class="link" id="auth-switch">Create account</span>')+'</div>'+
-    '</div>';
+      '<button class="btn green auth-cta" id="auth-go">CREATE ACCOUNT & CONTINUE</button>'+
+      '<div class="auth-divider"><span>already registered?</span></div>'+
+      '<button class="btn outline auth-cta" id="auth-switch">LOG IN INSTEAD</button>'+
+      trust()+foot()+'</div>';
   }
   function mountAuth(){
     var wrap=document.querySelector('#view-auth .auth-wrap');
     if(!wrap) return;
-    wrap.innerHTML=authHTML();
-    A.$('auth-tab-signup').onclick=function(){ mode='signup'; mountAuth(); };
-    A.$('auth-tab-login').onclick=function(){ mode='login'; mountAuth(); };
-    var sw=A.$('auth-switch'); if(sw) sw.onclick=function(){ mode=(mode==='signup'?'login':'signup'); mountAuth(); };
-    var tco=A.$('au-tc-open'); if(tco) tco.onclick=function(ev){ ev.preventDefault(); A.openTC(); };
+    wrap.innerHTML=(mode==='login'?loginScreen():signupScreen());
+    var sw=A.$('auth-switch'); if(sw) sw.onclick=function(){ mode=(mode==='login'?'signup':'login'); mountAuth(); };
+    var t1=A.$('au-tc-open'); if(t1) t1.onclick=function(e){e.preventDefault();A.openTC();};
+    var t2=A.$('au-tc-open2'); if(t2) t2.onclick=function(e){e.preventDefault();A.openTC();};
     A.$('auth-go').onclick=submitAuth;
   }
+  function goHome(){ setTimeout(function(){ if(A.state&&A.state.phone) A.go('home'); },60); }
   function submitAuth(){
     var err=A.$('auth-err2');
     var phone=(A.$('au-phone').value||'').replace(/\D/g,'');
@@ -211,17 +221,17 @@
       if(idx[phone]){ err.textContent='This number already has an account. Log in instead.'; return; }
       if(idx['e:'+email]){ err.textContent='This email is already registered.'; return; }
       idx[phone]=true; idx['e:'+email]=phone;
-      localStorage.setItem('asc_cred_index', JSON.stringify(idx));
-      localStorage.setItem('asc_cred_'+phone, JSON.stringify({pw:hash(pw), email:email, dob:dob, tc:true, ts:Date.now()}));
+      localStorage.setItem('asc_cred_index',JSON.stringify(idx));
+      localStorage.setItem('asc_cred_'+phone,JSON.stringify({pw:hash(pw),email:email,dob:dob,tc:true,ts:Date.now()}));
       localStorage.setItem('asc_tc_v1','1');
       A.$('auth-phone').value=phone;
-      proceed();
+      proceed(); goHome();
     } else {
       var saved=null; try{ saved=JSON.parse(localStorage.getItem('asc_cred_'+phone)||'null'); }catch(e){}
       if(!saved){ err.textContent='No account for this number. Create one first.'; return; }
       if(hash(pw)!==saved.pw){ err.textContent='Incorrect password.'; return; }
       A.$('auth-phone').value=phone;
-      proceed();
+      proceed(); goHome();
     }
   }
   A.AuthSubmit=function(){ submitAuth(); };
