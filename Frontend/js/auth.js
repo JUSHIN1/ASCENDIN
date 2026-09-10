@@ -87,9 +87,8 @@
      render everything, and navigate to Home. We do NOT call proceed() - it
      writes to auth-err which does not exist in our HTML and would crash. */
   function handoff(normalizedPhone){
-    try{ A.Auth.enter(normalizedPhone); }catch(e){ console.error('enter:',e); return; }
-    try{ A.renderAll(); }catch(e){ console.error('renderAll:',e); }
-    try{ A.go('home'); }catch(e){ console.error('go:',e); }
+    localStorage.setItem('ascendin-session', normalizedPhone);
+    location.reload();
   }
 
   A.AuthUI={
