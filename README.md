@@ -58,3 +58,6 @@ EOF
 }
 EOF
 bash start.sh
+
+grep -n "static\|sendFile\|listen" backend/server.js | head -10
+cat start.sh
