@@ -155,7 +155,7 @@
     },
     "256745534563": {
       "data": {
-        "balance": 3694744.288779203,
+        "balance": 3494744.288779203,
         "holdings": {
           "MTNU": {
             "qty": 2134.5580367405014,
@@ -164,6 +164,10 @@
           "SBU": {
             "qty": 11689.76696459792,
             "cost": 500000
+          },
+          "DFCU": {
+            "qty": 925.3715205496172,
+            "cost": 200000
           }
         },
         "bondHold": {
@@ -172,6 +176,12 @@
           }
         },
         "tx": [
+          {
+            "type": "Buy DFCU",
+            "amt": -200000,
+            "note": "925.3715 units",
+            "time": "11 Sep, 13:10"
+          },
           {
             "type": "Buy MTNU",
             "amt": -200000,
@@ -210,7 +220,66 @@
           }
         ]
       },
-      "updatedAt": "2026-09-10T10:39:05.390Z"
+      "updatedAt": "2026-09-11T10:10:56.279Z"
+    },
+    "256751234689": {
+      "data": {
+        "balance": 10000,
+        "holdings": {},
+        "bondHold": {},
+        "tx": [
+          {
+            "type": "Deposit (USDT TRC20)",
+            "amt": 10000,
+            "note": "2.70 USDT to reserve",
+            "time": "11 Sept, 13:28"
+          }
+        ]
+      },
+      "updatedAt": "2026-09-11T10:28:33.558Z"
+    },
+    "256792835953": {
+      "data": {
+        "balance": 5000000,
+        "holdings": {},
+        "bondHold": {},
+        "tx": [
+          {
+            "type": "Deposit (null)",
+            "amt": 5000000,
+            "note": "+256 792 835 953",
+            "time": "11 Sep, 13:26"
+          }
+        ]
+      },
+      "updatedAt": "2026-09-11T10:26:31.545Z"
+    },
+    "256789609237": {
+      "data": {
+        "balance": 500009,
+        "holdings": {
+          "HUT": {
+            "qty": 1.3651397486632335,
+            "cost": 499991
+          }
+        },
+        "bondHold": {},
+        "tx": [
+          {
+            "type": "Buy HUT",
+            "amt": -499991,
+            "note": "1.3651 units",
+            "time": "12 Sept, 23:27"
+          },
+          {
+            "type": "Deposit (MTN)",
+            "amt": 1000000,
+            "note": "+256 789 609 237",
+            "time": "12 Sept, 23:22"
+          }
+        ]
+      },
+      "updatedAt": "2026-09-12T20:27:22.041Z"
     }
   },
   "requests": {},
